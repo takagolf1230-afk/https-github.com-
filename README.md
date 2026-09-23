@@ -13,20 +13,18 @@
 
 ## ソフト作戦（やること）
 
-受注PDFをフォルダに置き、依頼された列を `columns.yaml` に書くだけ。
+**画面版（おすすめ）:** ブラウザで順番にボタンを押すだけ。
 
 ```bash
 python -m pip install -r requirements.txt
-python -m tools.pdf_job new --name お客様名
-# PDF を jobs/.../01_input/ へ
-python -m tools.pdf_job check --job （フォルダ名）
-python -m tools.pdf_job extract --job （フォルダ名）
-# columns.yaml を依頼どおりに直す
-python -m tools.pdf_job deliver --job （フォルダ名）
-# → 03_delivery/成果物.xlsx と .csv
+python -m streamlit run tools/pdf_job/app.py
 ```
 
-練習用:
+1. 案件を作る → 2. PDFアップロード → 3. 列を設定 → 4. 抽出 → 5. 納品ダウンロード
+
+コマンド版（予備）も同じ処理です。手順は `docs/beginner_runbook.md`。
+
+練習用PDF:
 
 ```bash
 python -m tools.pdf_job.make_sample_pdf

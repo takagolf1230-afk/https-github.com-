@@ -1,5 +1,4 @@
-# jobs/ 配下は案件データ置き場です。
-# 受注PDF・納品物・個人情報を含むため、Git には上げません。
+# 案件データはGitに上げない
 *
-!.gitkeep
+!.gitignore
 !README.md
