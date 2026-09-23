@@ -17,7 +17,7 @@
 
 ```bash
 python -m pip install -r requirements.txt
-python -m streamlit run tools/pdf_job/app.py
+python3 -m streamlit run tools/pdf_job/app.py
 ```
 
 1. 案件を作る → 2. PDFアップロード → 3. 列を設定 → 4. 抽出 → 5. 納品ダウンロード

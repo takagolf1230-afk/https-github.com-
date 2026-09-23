@@ -12,14 +12,8 @@ Pythonの中身を覚える必要はありません。
 ## 最初に1回だけ（PCセットアップ）
 
 ```bash
-cd （このリポジトリ）
 python -m pip install -r requirements.txt
-```
-
-### 画面を開く（おすすめ）
-
-```bash
-python -m streamlit run tools/pdf_job/app.py
+python3 -m streamlit run tools/pdf_job/app.py
 ```
 
 ブラウザが開いたら、画面の案内どおり
