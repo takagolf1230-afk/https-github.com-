@@ -1,15 +1,36 @@
-# Coconala PDF→Excel 出品キット
+# Coconala PDF→Excel 出品キット + 素人向け作業ソフト
 
-デスクトップの調査チャットから GitHub へ移植したリポジトリです。  
-iOS版 Cursor / クラウドエージェントからも、同じ原稿を参照できます。
+デスクトップの調査結果と、受注後に使う簡単な道具をまとめたリポジトリです。
 
-## ドキュメント
+## まず読むもの（素人向け）
 
 | ファイル | 内容 |
 |---|---|
-| [`docs/coconala_pdf_excel_listing.md`](docs/coconala_pdf_excel_listing.md) | ココナラにそのまま貼れる出品原稿 |
-| [`docs/coconala_market_analysis.md`](docs/coconala_market_analysis.md) | 市場・競合・価格・収益のサマリー |
-| [`docs/coconala_ops_workflow.md`](docs/coconala_ops_workflow.md) | 受注後の作業フロー |
+| [`docs/beginner_runbook.md`](docs/beginner_runbook.md) | **受注したらこの順で押すだけ** |
+| [`docs/coconala_pdf_excel_listing.md`](docs/coconala_pdf_excel_listing.md) | ココナラ貼り付け用の出品原稿 |
+| [`docs/coconala_market_analysis.md`](docs/coconala_market_analysis.md) | 市場・競合・価格・収益 |
+| [`docs/coconala_ops_workflow.md`](docs/coconala_ops_workflow.md) | 受注後の作業フロー詳細 |
+
+## ソフト作戦（やること）
+
+受注PDFをフォルダに置き、依頼された列を `columns.yaml` に書くだけ。
+
+```bash
+python -m pip install -r requirements.txt
+python -m tools.pdf_job new --name お客様名
+# PDF を jobs/.../01_input/ へ
+python -m tools.pdf_job check --job （フォルダ名）
+python -m tools.pdf_job extract --job （フォルダ名）
+# columns.yaml を依頼どおりに直す
+python -m tools.pdf_job deliver --job （フォルダ名）
+# → 03_delivery/成果物.xlsx と .csv
+```
+
+練習用:
+
+```bash
+python -m tools.pdf_job.make_sample_pdf
+```
 
 ## 最初に売るもの（1本）
 
@@ -18,10 +39,5 @@ iOS版 Cursor / クラウドエージェントからも、同じ原稿を参照�
 - **いくら:** 初回3枠のみ **3,000円**（通常表示 4,980円）
 - **範囲:** 5ページ・1ファイル・列構成1種類・修正1回
 
-1,500円帯の手入力競争には入らない。競馬専門としては出さない。
-
-## 次の一手
-
-1. 公開統計PDFで Before/After 画像を3枚作る
-2. ココナラに上記原稿を1商品だけ出品する
-3. 見積相談を12時間以内に返す
+1,500円帯の手入力競争には入らない。競馬専門としては出さない。  
+`jobs/` 配下のお客様データは Git に上がりません。

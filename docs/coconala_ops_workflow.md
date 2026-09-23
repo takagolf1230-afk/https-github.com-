@@ -10,10 +10,17 @@
 
 ## 初回だけ（半日）
 
-- 抽出テンプレ: `pdfplumber` / `camelot` / `pypdf`
-- 整理関数: pandas で型変換・全角半角・日付パース
-- 納品ブックひな形: シート `data` / `review` / `log`
-- 機密ファイル用の一時フォルダと、納品後削除チェックリスト
+素人向けの押すだけの手順は [`beginner_runbook.md`](./beginner_runbook.md)。
+
+```bash
+python -m pip install -r requirements.txt
+python -m tools.pdf_job new --name 練習
+```
+
+- 抽出: `tools.pdf_job`（pdfplumber）
+- 整理: 全角半角・日付・数値、重複削除
+- 納品ブック: シート `data` / `review` / `log`
+- 案件データは `jobs/`（Git除外済み）
 
 ---
 
