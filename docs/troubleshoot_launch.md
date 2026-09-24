@@ -1,29 +1,25 @@
 # 構造くんができないとき
 
-## まずこれだけやってください
+## まずこれだけやってください（完全版）
 
-1. このZIPをダウンロード  
-   https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip
+1. このZIPをダウンロード（中に `tools` が入っています）  
+   https://github.com/takagolf1230-afk/https-github.com-/raw/cursor/coconala-listing-docs-33f2/dist/kouzokun_windows.zip
 
 2. ZIPを右クリック → **すべて展開**
 
-3. 展開したフォルダを開く
+3. できた **`kouzokun`** フォルダを開く
 
-4. **`1_FIRST_SETUP.bat`** をダブルクリック  
-   （先頭が `1_` のファイルです）
+4. **`1_FIRST_SETUP.bat`** をダブルクリック
 
-5. 黒い窓の指示に従う  
-   → デスクトップに **`Kouzokun`** ができる
-
-6. デスクトップの **`Kouzokun`** をダブルクリック
+5. デスクトップの **`Kouzokun`** をダブルクリック
 
 ---
 
 ## よくある原因
 
-### A. フォルダが違う（いちばん多い）
-GitHubの普通のページ（main）のZIPだと、中身は README だけです。  
-必ず上の **枝付きZIP** を使ってください。
+### A. `tools` フォルダが無い（いちばん多い）
+起動用の `.bat` だけあって、`tools` が無いと動きません。  
+送っていただいた一覧に `tools` が無い場合は、この状態です。上の完全版ZIPを使ってください。
 
 正しいフォルダには次があります:
 - `1_FIRST_SETUP.bat`

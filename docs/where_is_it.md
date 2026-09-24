@@ -8,17 +8,13 @@
 1. 下のZIPをダウンロードする  
    https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip
 
-2. ZIPを右クリック → **すべて展開**  
-   できれば展開先を **デスクトップ** にする
+2. ZIPを右クリック → **すべて展開**
 
-3. できたフォルダを開く（名前はだいたい）  
-   `https-github.com--cursor-coconala-listing-docs-33f2`
+3. 展開したフォルダを開き、**`1_FIRST_SETUP.bat`** をダブルクリック
 
-4. その中にあるどれかをダブルクリック  
-   - `create_desktop_shortcut.bat`（英語名・見つけやすい）  
-   - または `デスクトップにショートカットを作る.bat`
+4. デスクトップにできた **`Kouzokun`** をダブルクリック
 
-5. デスクトップに **「構造くん」** ができるので、それをダブルクリック
+うまくいかないときは [`troubleshoot_launch.md`](./troubleshoot_launch.md)
 
 ## フォルダの中にある起動ファイル
 

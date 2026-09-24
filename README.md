@@ -13,15 +13,13 @@
 
 ## デスクトップから起動（Windows）
 
-**まだPCに無い場合:** まずこのZIPをダウンロードして展開してください。  
-https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip  
-手順の詳細は [`docs/where_is_it.md`](docs/where_is_it.md)。
+**まだPCに無い / できない場合（完全版ZIP）:**  
+https://github.com/takagolf1230-afk/https-github.com-/raw/cursor/coconala-listing-docs-33f2/dist/kouzokun_windows.zip  
 
-1. 展開したフォルダを開く
-2. **`create_desktop_shortcut.bat`** をダブルクリック
-3. デスクトップの **「構造くん」** をダブルクリック
+展開 → 中の `kouzokun` フォルダ → **`1_FIRST_SETUP.bat`**  
+デスクトップの **`Kouzokun`** をダブルクリック。
 
-くわしくは [`docs/desktop_launch.md`](docs/desktop_launch.md)。
+`tools` フォルダが無いと起動できません。詳細: [`docs/troubleshoot_launch.md`](docs/troubleshoot_launch.md)
 
 手動起動:
 
