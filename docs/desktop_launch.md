@@ -4,9 +4,12 @@
 
 ## いちばん簡単な流れ
 
-1. このリポジトリを **デスクトップ**（または好きな場所）に置く  
-   - GitHub から ZIP をダウンロードして展開、または `git clone`
-2. フォルダを開き、**`デスクトップにショートカットを作る.bat`** をダブルクリック
+0. まだPCにフォルダが無い人は、先にZIPをデスクトップへ展開  
+   https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip  
+   （詳しくは [`where_is_it.md`](./where_is_it.md)）
+
+1. 展開したフォルダを開く  
+2. **`create_desktop_shortcut.bat`**（または `デスクトップにショートカットを作る.bat`）をダブルクリック  
 3. デスクトップにできた **「構造くん」** をダブルクリック
 
 以後はデスクトップのアイコンだけで起動できます。

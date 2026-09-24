@@ -13,8 +13,12 @@
 
 ## デスクトップから起動（Windows）
 
-1. このフォルダをPCに置く（デスクトップ推奨）
-2. **`デスクトップにショートカットを作る.bat`** をダブルクリック
+**まだPCに無い場合:** まずこのZIPをダウンロードして展開してください。  
+https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip  
+手順の詳細は [`docs/where_is_it.md`](docs/where_is_it.md)。
+
+1. 展開したフォルダを開く
+2. **`create_desktop_shortcut.bat`** をダブルクリック
 3. デスクトップの **「構造くん」** をダブルクリック
 
 くわしくは [`docs/desktop_launch.md`](docs/desktop_launch.md)。
