@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+.venv/
+venv/
+.env
+*.db
+.DS_Store
+jobs/*
+!jobs/.gitignore
+!jobs/README.md

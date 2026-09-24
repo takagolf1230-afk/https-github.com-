@@ -1,0 +1,20 @@
+# 依頼された「欲しい列」をここに書きます。
+# name  = 納品する列名（お客様指定があればそのまま）
+# source = PDF側に書いてありそうな見出しの候補（複数可）
+# type   = text / number / date
+
+pages: null   # 例: [1, 2]  全部なら null のまま
+
+columns:
+  - name: date
+    source: ["日付", "年月日", "Date"]
+    type: date
+  - name: product
+    source: ["商品名", "品名", "項目", "Product"]
+    type: text
+  - name: quantity
+    source: ["数量", "個数", "Qty"]
+    type: number
+  - name: amount
+    source: ["金額", "税込", "Amount", "合計"]
+    type: number

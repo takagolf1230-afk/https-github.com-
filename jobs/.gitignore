@@ -1,0 +1,4 @@
+# 案件データはGitに上げない
+*
+!.gitignore
+!README.md
