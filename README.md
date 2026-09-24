@@ -20,7 +20,9 @@ python -m pip install -r requirements.txt
 python3 -m streamlit run tools/pdf_job/app.py
 ```
 
-1. 案件を作る → 2. PDFアップロード → 3. 列を設定 → 4. 抽出 → 5. 納品ダウンロード
+1. 案件タブで作成 → 2. PDFタブでアップロード → 3. 列設定 → 4. 抽出 → 5. 納品ダウンロード
+
+画面名は **構造くん**（青緑の書類ワークスペース）。タブ切替で直感操作できます。
 
 コマンド版（予備）も同じ処理です。手順は `docs/beginner_runbook.md`。
 
