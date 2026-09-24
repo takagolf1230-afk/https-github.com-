@@ -11,6 +11,16 @@ Pythonの中身を覚える必要はありません。
 
 ## 最初に1回だけ（PCセットアップ）
 
+### Windows（おすすめ：デスクトップ起動）
+
+1. このリポジトリをPCに置く  
+2. **`デスクトップにショートカットを作る.bat`** をダブルクリック  
+3. デスクトップの **「構造くん」** をダブルクリック  
+
+詳細: [`desktop_launch.md`](./desktop_launch.md)
+
+### コマンドで開く場合
+
 ```bash
 python -m pip install -r requirements.txt
 python3 -m streamlit run tools/pdf_job/app.py

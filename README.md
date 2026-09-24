@@ -11,9 +11,15 @@
 | [`docs/coconala_market_analysis.md`](docs/coconala_market_analysis.md) | 市場・競合・価格・収益 |
 | [`docs/coconala_ops_workflow.md`](docs/coconala_ops_workflow.md) | 受注後の作業フロー詳細 |
 
-## ソフト作戦（やること）
+## デスクトップから起動（Windows）
 
-**画面版（おすすめ）:** ブラウザで順番にボタンを押すだけ。
+1. このフォルダをPCに置く（デスクトップ推奨）
+2. **`デスクトップにショートカットを作る.bat`** をダブルクリック
+3. デスクトップの **「構造くん」** をダブルクリック
+
+くわしくは [`docs/desktop_launch.md`](docs/desktop_launch.md)。
+
+手動起動:
 
 ```bash
 python -m pip install -r requirements.txt
