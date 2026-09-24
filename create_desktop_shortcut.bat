@@ -1,18 +1,25 @@
 @echo off
-REM Create desktop shortcuts (ASCII filename - use this)
+REM Put a launcher on Desktop that calls this folder's start_kouzokun.bat
 chcp 65001 >nul
 setlocal EnableExtensions
 cd /d "%~dp0"
 
 echo ========================================
-echo   デスクトップにショートカットを作ります
+echo   デスクトップへ起動ファイルを置きます
 echo ========================================
 echo.
 
 if not exist "%~dp0start_kouzokun.bat" (
-  echo [エラー] start_kouzokun.bat が同じフォルダにありません。
-  echo 正しいZIPを展開したフォルダで実行してください。
-  echo https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip
+  echo [エラー] start_kouzokun.bat がありません。
+  echo 完全版ZIPの kouzokun フォルダで実行してください。
+  echo https://github.com/takagolf1230-afk/https-github.com-/raw/cursor/coconala-listing-docs-33f2/dist/kouzokun_windows.zip
+  pause
+  exit /b 1
+)
+
+if not exist "%~dp0tools\pdf_job\app.py" (
+  echo [エラー] tools フォルダがありません。不完全なコピーです。
+  echo 完全版ZIPを入れ直してください。
   pause
   exit /b 1
 )
@@ -20,56 +27,84 @@ if not exist "%~dp0start_kouzokun.bat" (
 set "TARGET=%~dp0start_kouzokun.bat"
 set "WORKDIR=%~dp0"
 
-set "DESKTOP="
-if exist "%USERPROFILE%\Desktop" set "DESKTOP=%USERPROFILE%\Desktop"
-if not defined DESKTOP if exist "%USERPROFILE%\OneDrive\Desktop" set "DESKTOP=%USERPROFILE%\OneDrive\Desktop"
-if not defined DESKTOP if exist "%USERPROFILE%\OneDrive\デスクトップ" set "DESKTOP=%USERPROFILE%\OneDrive\デスクトップ"
-if not defined DESKTOP if exist "%USERPROFILE%\デスクトップ" set "DESKTOP=%USERPROFILE%\デスクトップ"
+for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "[Environment]::GetFolderPath('Desktop')"`) do set "DESKTOP=%%I"
+if not defined DESKTOP set "DESKTOP=%USERPROFILE%\Desktop"
+if not exist "%DESKTOP%" if exist "%USERPROFILE%\OneDrive\Desktop" set "DESKTOP=%USERPROFILE%\OneDrive\Desktop"
+if not exist "%DESKTOP%" if exist "%USERPROFILE%\OneDrive\デスクトップ" set "DESKTOP=%USERPROFILE%\OneDrive\デスクトップ"
+if not exist "%DESKTOP%" if exist "%USERPROFILE%\デスクトップ" set "DESKTOP=%USERPROFILE%\デスクトップ"
 
-if not defined DESKTOP (
-  echo [エラー] デスクトップフォルダが見つかりません。
-  echo 手動で start_kouzokun.bat をダブルクリックして起動できます。
+echo Desktop : %DESKTOP%
+echo App folder: %WORKDIR%
+echo.
+
+if not exist "%DESKTOP%" (
+  echo [エラー] デスクトップ場所が分かりません。
+  echo 代わりに start_kouzokun.bat を直接ダブルクリックしてください。
+  explorer "%~dp0"
   pause
   exit /b 1
 )
 
-echo Desktop: %DESKTOP%
-echo Target : %TARGET%
-echo.
+REM Create a tiny launcher on Desktop with absolute path to this install
+(
+  echo @echo off
+  echo rem Auto-generated launcher for Kouzokun
+  echo call "%TARGET%"
+) > "%DESKTOP%\Kouzokun.bat"
 
+if exist "%DESKTOP%\Kouzokun.bat" (
+  echo [成功] デスクトップに Kouzokun.bat を作りました。
+) else (
+  echo [失敗] Kouzokun.bat をデスクトップに書けませんでした。
+)
+
+REM Optional .lnk shortcuts
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop';" ^
+  "$ErrorActionPreference='Continue';" ^
   "$desktop='%DESKTOP%';" ^
   "$target='%TARGET%';" ^
   "$workdir='%WORKDIR%';" ^
   "$s=New-Object -ComObject WScript.Shell;" ^
-  "foreach($name in @('構造くん.lnk','Kouzokun.lnk')){" ^
-  "  $path=Join-Path $desktop $name;" ^
-  "  $sc=$s.CreateShortcut($path);" ^
-  "  $sc.TargetPath=$target;" ^
-  "  $sc.WorkingDirectory=$workdir;" ^
-  "  $sc.WindowStyle=1;" ^
-  "  $sc.Description='Kouzokun PDF to Excel';" ^
-  "  $sc.IconLocation='shell32.dll,168';" ^
-  "  $sc.Save();" ^
-  "  Write-Output ('created: ' + $path)" ^
+  "foreach($name in @('Kouzokun.lnk','構造くん.lnk')){" ^
+  "  try {" ^
+  "    $path=Join-Path $desktop $name;" ^
+  "    $sc=$s.CreateShortcut($path);" ^
+  "    $sc.TargetPath=$target;" ^
+  "    $sc.WorkingDirectory=$workdir;" ^
+  "    $sc.WindowStyle=1;" ^
+  "    $sc.Description='Kouzokun PDF to Excel';" ^
+  "    $sc.IconLocation='shell32.dll,168';" ^
+  "    $sc.Save();" ^
+  "    Write-Output ('shortcut ok: ' + $name)" ^
+  "  } catch { Write-Output ('shortcut skip: ' + $name) }" ^
   "}"
 
-set "OK=0"
-if exist "%DESKTOP%\Kouzokun.lnk" set "OK=1"
-if exist "%DESKTOP%\構造くん.lnk" set "OK=1"
+(
+  echo 構造くんの起動
+  echo.
+  echo デスクトップの「Kouzokun.bat」をダブルクリックしてください。
+  echo.
+  echo もしデスクトップに無い場合:
+  echo 1. エクスプローラーを開く
+  echo 2. 次のフォルダを開く
+  echo %WORKDIR%
+  echo 3. start_kouzokun.bat をダブルクリック
+  echo.
+  echo デスクトップ判定パス: %DESKTOP%
+) > "%DESKTOP%\Kouzokunの使い方.txt" 2>nul
 
 echo.
-if "%OK%"=="1" (
-  echo [成功] デスクトップにショートカットを作りました。
-  echo   - Kouzokun
-  echo   - 構造くん （表示される場合）
+echo ----------------------------------------
+if exist "%DESKTOP%\Kouzokun.bat" (
+  echo 今からデスクトップフォルダを開きます。
+  echo ファイル名: Kouzokun.bat
+  echo これをダブルクリック = 構造くん起動
   echo.
-  echo 次にデスクトップの「Kouzokun」をダブルクリックしてください。
-  echo 初回は黒窓で部品インストールのあと、ブラウザが開きます。
+  explorer "%DESKTOP%"
 ) else (
-  echo [エラー] ショートカット作成に失敗しました。
-  echo 代わりに、このフォルダの start_kouzokun.bat を直接ダブルクリックしてください。
+  echo デスクトップに書けなかったので、本体フォルダを開きます。
+  echo start_kouzokun.bat をダブルクリックしてください。
+  explorer "%~dp0"
 )
 
 echo.

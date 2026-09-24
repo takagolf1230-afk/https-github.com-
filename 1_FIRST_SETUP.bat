@@ -9,35 +9,37 @@ echo ========================================
 echo   構造くん はじめてセットアップ
 echo ========================================
 echo.
-echo この黒い窓のメッセージを最後まで読んでください。
-echo.
 
 if not exist "%~dp0start_kouzokun.bat" (
   echo [エラー] 正しいフォルダではありません。
-  echo 下のZIPをダウンロード→展開して、その中の
-  echo 1_FIRST_SETUP.bat を実行してください。
-  echo.
-  echo https://github.com/takagolf1230-afk/https-github.com-/archive/refs/heads/cursor/coconala-listing-docs-33f2.zip
-  echo.
+  echo 完全版ZIPを展開した kouzokun フォルダで実行してください。
+  echo https://github.com/takagolf1230-afk/https-github.com-/raw/cursor/coconala-listing-docs-33f2/dist/kouzokun_windows.zip
   pause
   exit /b 1
 )
 
-echo [1/2] デスクトップにアイコンを作ります...
-call "%~dp0create_desktop_shortcut.bat"
-echo.
-echo [2/2] このまま起動も試しますか？
-echo.
-choice /C YN /M "今すぐ起動する (Y) / あとでデスクトップから起動 (N)"
-if errorlevel 2 goto end
-if errorlevel 1 goto startnow
+if not exist "%~dp0tools\pdf_job\app.py" (
+  echo [エラー] tools フォルダがありません。
+  echo 完全版ZIPを入れ直してください。
+  pause
+  exit /b 1
+)
 
-:startnow
-call "%~dp0start_kouzokun.bat"
-goto end
+echo [1/2] デスクトップに Kouzokun.bat を置きます...
+call "%~dp0create_desktop_shortcut.bat"
+
+echo.
+echo ----------------------------------------
+echo デスクトップに「Kouzokun.bat」があれば成功です。
+echo それをダブルクリックすると起動します。
+echo.
+echo もしデスクトップに無ければ、このフォルダの
+echo start_kouzokun.bat をダブルクリックしてください。
+echo.
+choice /C YN /M "今すぐ起動する (Y) / 後で起動する (N)"
+if errorlevel 2 goto end
+if errorlevel 1 call "%~dp0start_kouzokun.bat"
 
 :end
 echo.
-echo セットアップ処理はここまでです。
-echo デスクトップに「Kouzokun」があれば成功です。
 pause
