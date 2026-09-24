@@ -21,44 +21,56 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Document-workshop look: cool paper + teal (not keiba dark / not purple)
+# Dark workspace with high-contrast text (readable on charcoal panels)
 THEME_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 
 :root {
-  --bg: #e7eef5;
-  --panel: #ffffff;
-  --ink: #1e293b;
-  --muted: #64748b;
-  --line: #c5d4e3;
-  --teal: #0f766e;
-  --teal-deep: #115e59;
-  --sand: #fff7ed;
-  --warn: #c2410c;
+  --bg: #0b1220;
+  --panel: #152033;
+  --panel-2: #1c2a42;
+  --ink: #f8fafc;
+  --muted: #cbd5e1;
+  --line: #334155;
+  --accent: #5eead4;
+  --accent-deep: #2dd4bf;
+  --btn: #0d9488;
+  --btn-hover: #14b8a6;
+  --warn-bg: #3b250f;
+  --ok-bg: #0f2f28;
 }
 
-html, body, [class*="css"]  {
+html, body, [class*="css"] {
   font-family: "IBM Plex Sans JP", "Hiragino Sans", sans-serif;
-  color: var(--ink);
+  color: var(--ink) !important;
 }
 
 .stApp {
   background:
-    radial-gradient(1200px 500px at 10% -10%, #d9ebe8 0%, transparent 55%),
-    radial-gradient(900px 420px at 100% 0%, #fde7d4 0%, transparent 50%),
-    linear-gradient(180deg, #e7eef5 0%, #f3f6fa 100%);
+    radial-gradient(900px 420px at 0% 0%, rgba(45, 212, 191, 0.12) 0%, transparent 55%),
+    radial-gradient(800px 380px at 100% 10%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0b1220 0%, #111827 100%);
+  color: var(--ink);
 }
 
-/* Hide default chrome that feels like other apps */
-#MainMenu { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
 header { visibility: hidden; }
-footer { visibility: hidden; }
 
 .block-container {
   padding-top: 1.2rem;
   padding-bottom: 3rem;
   max-width: 1100px;
+}
+
+/* Force readable text across Streamlit widgets */
+.stMarkdown, .stMarkdown p, .stMarkdown li, .stCaption, label,
+[data-testid="stWidgetLabel"] p, [data-testid="stMetricValue"],
+[data-testid="stMetricLabel"], .stTextInput label, .stSelectbox label {
+  color: var(--ink) !important;
+}
+.stCaption, [data-testid="stCaptionContainer"] {
+  color: var(--muted) !important;
 }
 
 .brand-bar {
@@ -70,95 +82,113 @@ footer { visibility: hidden; }
   padding: 1rem 1.15rem;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: linear-gradient(135deg, #ffffff 0%, #f4fbfa 55%, #fff8f1 100%);
-  box-shadow: 0 10px 30px rgba(15, 118, 110, 0.06);
+  background: linear-gradient(135deg, #152033 0%, #1a2740 60%, #1f2937 100%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 .brand-bar h1 {
   font-family: "Fraunces", "IBM Plex Sans JP", serif;
   font-size: 1.85rem;
   line-height: 1.15;
   margin: 0;
-  color: var(--teal-deep);
+  color: #ecfeff !important;
   letter-spacing: 0.01em;
 }
 .brand-bar p {
   margin: 0.35rem 0 0;
-  color: var(--muted);
+  color: #e2e8f0 !important;
   font-size: 0.95rem;
 }
 .brand-pill {
   white-space: nowrap;
-  background: var(--teal);
-  color: white;
+  background: var(--btn);
+  color: #042f2e !important;
   border-radius: 999px;
   padding: 0.35rem 0.8rem;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .job-strip {
   margin: 0.4rem 0 1rem;
   padding: 0.85rem 1rem;
   border-radius: 14px;
-  border: 1px dashed var(--line);
-  background: rgba(255,255,255,0.72);
-  color: var(--ink);
+  border: 1px dashed #475569;
+  background: rgba(21, 32, 51, 0.9);
+  color: #f8fafc !important;
 }
-.job-strip strong { color: var(--teal-deep); }
+.job-strip strong { color: var(--accent) !important; }
 
 div[data-testid="stTabs"] {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 0.35rem 0.75rem 1rem;
-  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.05);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 }
 div[data-testid="stTabs"] button[role="tab"] {
-  font-weight: 600;
-  color: var(--muted);
+  font-weight: 700;
+  color: #94a3b8 !important;
 }
 div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-  color: var(--teal-deep) !important;
+  color: #ecfeff !important;
 }
-div[data-testid="stTabs"] button[role="tab"][aria-selected="true"]::after,
-div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+div[data-testid="stTabs"] div[data-baseweb="tab-highlight"],
 div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
-  background-color: var(--teal) !important;
-  color: var(--teal) !important;
-  border-bottom-color: var(--teal) !important;
+  background-color: var(--accent-deep) !important;
 }
-/* Streamlit default red underline → teal */
-div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {
-  background-color: #0f766e !important;
+
+/* Inputs / selects */
+div[data-baseweb="input"] > div,
+div[data-baseweb="select"] > div,
+.stTextInput input, .stNumberInput input {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+  caret-color: #f8fafc !important;
 }
-div[data-testid="stMarkdownContainer"] a {
-  color: var(--teal-deep);
-}
+div[data-baseweb="select"] svg { fill: #e2e8f0 !important; }
 
 .stButton > button[kind="primary"],
 .stButton > button[data-testid="baseButton-primary"] {
-  background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%);
-  border: 1px solid #0f766e;
-  color: #fff;
-  font-weight: 600;
+  background: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%) !important;
+  border: 1px solid #5eead4 !important;
+  color: #042f2e !important;
+  font-weight: 700 !important;
   border-radius: 12px;
 }
 .stButton > button[kind="secondary"],
 .stButton > button[data-testid="baseButton-secondary"] {
   border-radius: 12px;
-  border-color: var(--line);
-  color: var(--ink);
-  background: #fff;
+  border: 1px solid #64748b !important;
+  color: #f8fafc !important;
+  background: #1e293b !important;
 }
 
 div[data-testid="stAlert"] {
   border-radius: 12px;
+  color: #f8fafc !important;
 }
-
 section[data-testid="stFileUploader"] {
-  background: var(--sand);
+  background: #1e293b;
+  border: 1px solid #475569;
   border-radius: 12px;
   padding: 0.4rem;
+  color: #f8fafc !important;
+}
+
+/* Dataframes / editors */
+[data-testid="stDataFrame"], [data-testid="stDataEditor"] {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+[data-testid="stDataFrame"] *, [data-testid="stDataEditor"] * {
+  color: #f1f5f9 !important;
+}
+
+code, pre, .stCodeBlock {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
 }
 </style>
 """
@@ -198,7 +228,7 @@ def render_brand() -> None:
             <h1>構造くん</h1>
             <p>PDFの表を、依頼どおりのExcel / CSVに整える作業台（ココナラ受注用）</p>
           </div>
-          <div class="brand-pill">書類ワークスペース</div>
+          <div class="brand-pill">暗色ハイコントラスト</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -505,7 +535,7 @@ def tab_help() -> None:
         """
     )
     st.markdown("##### 色の意図")
-    st.write("競馬分析ソフトと区別するため、書類作業向けの青緑（ティール）＋紙色にしています。")
+    st.write("暗い背景＋ほぼ白の文字で読みやすくしています。アクセントはミント系で、競馬ソフトの緑黒とは分けています。")
 
 
 def main() -> None:
