@@ -6,3 +6,4 @@ venv/
 next/out/
 *.db
 .DS_Store
+next/out/

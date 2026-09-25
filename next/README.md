@@ -7,33 +7,43 @@
 
 - 設計: `docs/dual-system-architecture.md`
 - データ: JRA-VAN JV-Data のみ
-- 出力: 現行と別パス（例: `next/out/`）
+- 出力: 現行と別パス（`next/out/`）
 - 比較: 確定後に的中率・回収率を並べるだけ
 
-## 予定モジュール
-
-```text
-next/
-  keiba_next/
-    db.py                 # JV DB 読み取り
-    course_key.py         # レース・競馬場条件キー
-    win_profiles.py       # 勝ちきり条件の集計（馬・コース）
-    win_match.py          # 今走出走馬への照合 → win_score
-    features.py           # place/dark 等
-    marks.py              # 印付け
-    race_pattern.py       # Solid/AxisEdge/Mid/Chaos
-    tickets.py            # T1〜T7
-    gates.py              # odds_floor / EV
-    backtest.py           # 検証
-```
-
-勝ちきり照合の設計: [`docs/win-condition-matching.md`](../docs/win-condition-matching.md)
-
-## 使い方（予定）
+## セットアップ
 
 ```bash
-python -m keiba_next.predict --db /path/to/jv_data.db --date YYYYMMDD
-python -m keiba_next.backtest --db /path/to/jv_data.db --from YYYYMMDD --to YYYYMMDD
+cd next
+PYTHONPATH=. python3 -m keiba_next fixture --out out/fixture.db
+PYTHONPATH=. python3 -m keiba_next ping --db out/fixture.db
+PYTHONPATH=. python3 -m keiba_next predict --db out/fixture.db --date 20260921
 ```
 
-実装は M1（DB接続）から順に追加する。
+実データ:
+
+```bash
+PYTHONPATH=. python3 -m keiba_next inspect --db /path/to/jv_data.db
+PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD
+```
+
+## モジュール
+
+```text
+keiba_next/
+  db.py            # JV DB 読み取り・スキーマ検出
+  course_key.py    # レース・競馬場条件キー
+  win_match.py     # 勝ちきり照合 → win_score
+  race_pattern.py  # Solid/AxisEdge/Mid/Chaos
+  marks.py         # ◎○▲△☆
+  tickets.py       # T1〜T7
+  gates.py         # odds_floor / EV
+  pipeline.py      # 1レース予想
+  fixture.py       # 開発用ミニDB
+  cli.py           # CLI
+```
+
+## テスト
+
+```bash
+cd next && PYTHONPATH=. python3 -m unittest tests.test_pipeline -v
+```
