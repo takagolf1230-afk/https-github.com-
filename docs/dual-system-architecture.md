@@ -121,10 +121,16 @@ next/                 … 新予想システム専用コード（現行と隔離
 | Step | 内容 | 現行への影響 |
 | --- | --- | --- |
 | M0 | 設計ドキュメント（済） | なし |
-| M1 | `next/` スケルトン + `--db` 接続確認 | なし |
-| M2 | **勝ちきり条件抽出＋照合 → win_score** / 機械印 | なし |
-| M3 | race_pattern + T1〜T7 買い目 | なし |
-| M4 | odds_floor / EV ケン | なし |
+| M1 | `next/` DB接続・スキーマ検出・CLI（済） | なし |
+| M2 | 勝ちきり条件抽出＋照合 → win_score / 機械印（済・骨格） | なし |
+| M3 | race_pattern + T1〜T7 買い目（済・骨格） | なし |
+| M4 | odds_floor / EV ケン（済・骨格） | なし |
 | M5 | 現行結果との比較レポート | なし（読み比べのみ） |
 
-M1 からこのリポジトリの `next/` で進める。
+実データ接続:
+
+```bash
+cd next
+PYTHONPATH=. python3 -m keiba_next inspect --db /path/to/jv_data.db
+PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD
+```
