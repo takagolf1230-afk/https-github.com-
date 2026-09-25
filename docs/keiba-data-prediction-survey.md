@@ -286,6 +286,9 @@ race_pass    = axis_solid が閾値以上なら Pass（軸が無い荒れは Ski
 5. Harville 三連単（厳格ゲート＋予算キャップ）
 6. 合成オッズ
 
+印・軸・買い方の「他予想家型」への具体的な写像は
+[tipster-pattern-mapping.md](tipster-pattern-mapping.md) を正とする。
+
 ---
 
 ## 7. よくある失敗と回避
