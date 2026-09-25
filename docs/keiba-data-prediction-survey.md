@@ -280,7 +280,7 @@ race_pass    = axis_solid が閾値以上なら Pass（軸が無い荒れは Ski
 | 券種 | 条件固定しない / 質で変える | 4章マトリクスを採用 |
 | 配分 | レース同額の点数割り | 堅実レースは厚く、Mid は薄く |
 | 合成オッズ | 後回し | 維持 |
-| DB | `jv_data.db` は `--db` 指定で実集計 | コンテナ外で検証 |
+| DB | **JRA公式（JV-Data / `jv_data.db`）**。`--db` で実集計 | [jra-official-data-source.md](jra-official-data-source.md) |
 
 優先実装順（コードは別タスク）:
 
