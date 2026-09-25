@@ -5,3 +5,4 @@
 - [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
 - [他予想家の印・軸・買い方の当てはめ](docs/tipster-pattern-mapping.md)
 - [レース厳選・予想に必要なデータ一覧（的中＋回収）](docs/required-data-for-selection.md)
+- [成績が良い予想家の真似プレイブック](docs/imitate-successful-tipsters.md)
