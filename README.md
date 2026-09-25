@@ -1,1 +1,5 @@
-# https-github.com-
+# 競馬データ予想調査
+
+的中寄り（高確率レースに絞り、レースの質で券種を変える）の調査メモです。
+
+- [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
