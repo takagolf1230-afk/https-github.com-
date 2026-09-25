@@ -271,28 +271,28 @@ race_pass    = axis_solid が閾値以上なら Pass（軸が無い荒れは Ski
 
 ---
 
-## 6. Logic Horse への接続
+## 6. Logic Horse / 現行システムとの関係
 
-| レイヤ | 現状方針 | 本調査の位置づけ |
+**現行（Logic Horse 等）は変更しない。** 新系統は別系統で構築する。  
+詳細は [dual-system-architecture.md](dual-system-architecture.md)。
+
+| レイヤ | 現行 | 新系統（`next/`） |
 | --- | --- | --- |
-| 印（◎◯▲△） | 当面固定して検証 | 将来、Ranker＋複勝モデルで精度改善 |
-| レース選別 | 要強化 | `axis_solid` / `field_chaos` 分離を最優先で入れる |
-| 券種 | 条件固定しない / 質で変える | 4章マトリクスを採用 |
-| 配分 | レース同額の点数割り | 堅実レースは厚く、Mid は薄く |
-| 合成オッズ | 後回し | 維持 |
-| DB | **JRA公式（JV-Data / `jv_data.db`）**。`--db` で実集計 | [jra-official-data-source.md](jra-official-data-source.md) |
+| 印（◎◯▲△） | そのまま | 機械印を新規実装 |
+| レース選別 | そのまま | `race_pattern` + ケン |
+| 券種 | そのまま | T1〜T7 |
+| 配分 | そのまま | 点数割り＋High厚め |
+| 合成オッズ | 後回し | 後回し |
+| DB | 既存の読み方 | JV公式を `--db` で読む（専用コード） |
 
-優先実装順（コードは別タスク）:
+優先実装順（**新系統のみ**、現行コード非改変）:
 
-1. `axis_solid` / `field_chaos` 分離と Pass/Skip（神戸新聞杯型を落とさない）
-2. 券種マトリクス（堅実 / 軸堅・下位荒れ / 中荒れ × コース）
-3. 軸流し点数シミュレーション（既存 `lh_axis_flow_sim.py` 系）
-4. 印モデル精度（特徴量 → LightGBM Ranker）＋穴3着候補の根拠特徴
-5. Harville 三連単（厳格ゲート＋予算キャップ）
-6. 合成オッズ
-
-印・軸・買い方の「他予想家型」への具体的な写像は
-[tipster-pattern-mapping.md](tipster-pattern-mapping.md) を正とする。
+1. `next/` の `--db` 接続（M1）
+2. スコア + 機械印（M2）
+3. race_pattern + T1〜T7（M3）
+4. odds_floor / EV（M4）
+5. 現行との比較レポート（M5）
+6. Harville / 合成オッズはそれ以降
 
 ---
 
