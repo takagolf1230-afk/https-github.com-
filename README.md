@@ -7,6 +7,7 @@
 データソース: **JRA公式（JRA-VAN Data Lab / JV-Data）**
 
 - [デュアル運用（現行固定・新系統並行）](docs/dual-system-architecture.md)
+- [現行と新系統で何が変わるか](docs/what-changes-from-current.md)
 - [勝ちきり条件の抽出と出走馬照合](docs/win-condition-matching.md)
 - [データソース方針（JRA公式）](docs/jra-official-data-source.md)
 - [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
