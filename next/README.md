@@ -14,16 +14,20 @@
 
 ```text
 next/
-  keiba_next/          # パッケージ
-    db.py              # JV DB 読み取り
-    features.py        # 過去走スコア
-    marks.py           # 印付け
-    race_pattern.py    # Solid/AxisEdge/Mid/Chaos
-    tickets.py         # T1〜T7
-    gates.py           # odds_floor / EV
-    backtest.py        # 検証
-  README.md            # 本ファイル
+  keiba_next/
+    db.py                 # JV DB 読み取り
+    course_key.py         # レース・競馬場条件キー
+    win_profiles.py       # 勝ちきり条件の集計（馬・コース）
+    win_match.py          # 今走出走馬への照合 → win_score
+    features.py           # place/dark 等
+    marks.py              # 印付け
+    race_pattern.py       # Solid/AxisEdge/Mid/Chaos
+    tickets.py            # T1〜T7
+    gates.py              # odds_floor / EV
+    backtest.py           # 検証
 ```
+
+勝ちきり照合の設計: [`docs/win-condition-matching.md`](../docs/win-condition-matching.md)
 
 ## 使い方（予定）
 
