@@ -16,6 +16,7 @@
 ```bash
 cd next
 PYTHONPATH=. python3 -m keiba_next train --db /path/to/jv_data.db --until 20260101 --model out/ranker.txt
+PYTHONPATH=. python3 -m keiba_next backtest --db /path/to/jv_data.db --until 20260101 --model out/ranker.txt
 PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD --model out/ranker.txt
 ```
 
@@ -26,7 +27,11 @@ PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYM
 過去走のみ: 出走数、勝率、複勝率、平均着順の逆数、同場勝率、同距離帯勝率、勝率/複勝率。  
 当該走の着順・確定オッズは入れない。
 
-## まだ後で足すもの
+## 検証
+
+`backtest` は `--until` より前だけで学習し、その日以降のレースでスコア1位の単勝的中率を出します。回収率は行に `TanOdds` があるときだけ計算します。
+
+実データの `jv_data.db` はこの開発環境には無いので、バックテストの実行は手元のDBパスで行います。
 
 - 上がり・通過・枠・馬場の特徴
 - 実DBの列名差の吸収
