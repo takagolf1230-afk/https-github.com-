@@ -1,0 +1,13 @@
+[project]
+name = "keiba-next"
+version = "0.1.0"
+description = "New keiba prediction system (parallel to current; JRA JV-Data)"
+requires-python = ">=3.10"
+dependencies = ["lightgbm>=4.0"]
+
+[project.scripts]
+keiba-next = "keiba_next.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["keiba_next*"]

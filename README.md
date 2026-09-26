@@ -1,1 +1,28 @@
-# https-github.com-
+# 競馬データ予想調査
+
+的中寄り（高確率レースに絞り、レースの質で券種を変える）の調査メモです。
+
+**デスクトップで開発する:** `setup-local.bat` がデスクトップに `keiba-next` フォルダを作る。手順は [docs/local-setup.md](docs/local-setup.md)  
+**ローカルCursorに渡す開発ログ:** [docs/cursor-dev-log.md](docs/cursor-dev-log.md)  
+**開発チャットに貼る文:** [docs/dev-assistant-brief.md](docs/dev-assistant-brief.md)
+
+**主ドキュメント（本プランの成果物）:** [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
+
+**運用方針:** 現行予想はそのまま。新系統は `next/` で別構築。  
+**印の決め方:** 数値モデルのみ。チャットAIは解説専用。オッズは購入ゲートのみ。  
+**データソース:** JRA公式（JRA-VAN Data Lab / JV-Data）
+
+関連:
+
+- [デュアル運用（現行固定・新系統並行）](docs/dual-system-architecture.md)
+- [現行と新系統で何が変わるか](docs/what-changes-from-current.md)
+- [別系統 LightGBM](docs/lightgbm-system.md)
+- [他予想家のAI活用](docs/how-others-use-ai.md)
+- [現行LLMパイプラインの診断](docs/llm-pipeline-diagnosis.md)
+- [移行プラン（現行LLM → 新系統）](docs/rollout-plan.md)
+- [勝ちきり条件の抽出と出走馬照合](docs/win-condition-matching.md)
+- [データソース方針（JRA公式）](docs/jra-official-data-source.md)
+- [他予想家の印・軸・買い方の当てはめ](docs/tipster-pattern-mapping.md)
+- [レース厳選・予想に必要なデータ一覧（的中＋回収）](docs/required-data-for-selection.md)
+- [成績が良い予想家の真似プレイブック](docs/imitate-successful-tipsters.md)
+- [新系統コード `next/`](next/README.md)
