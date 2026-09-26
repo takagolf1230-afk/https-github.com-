@@ -20,6 +20,7 @@ from keiba_next.db import (
     ping,
     table_columns,
 )
+from keiba_next.backtest import run_backtest
 from keiba_next.fixture import build_fixture
 from keiba_next.lgbm_features import build_predict_matrix, build_training_rows
 from keiba_next.lgbm_model import load_ranker, predict_scores, scores_to_win_score, train_ranker
@@ -140,6 +141,15 @@ def cmd_train(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_backtest(args: argparse.Namespace) -> int:
+    with connect(args.db) as conn:
+        schema = detect_schema(conn)
+        rows = _load_labeled_rows(conn, schema)
+    result = run_backtest(rows, args.until, args.model)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result.get("ok") else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="keiba_next", description="新予想システム CLI")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -168,6 +178,12 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--model", required=True)
     train.add_argument("--until", default=None, help="この日付未満だけ学習 YYYYMMDD")
     train.set_defaults(func=cmd_train)
+
+    bt = sub.add_parser("backtest", help="until 未満で学習し以降の1着的中を測る")
+    bt.add_argument("--db", required=True)
+    bt.add_argument("--until", required=True)
+    bt.add_argument("--model", required=True)
+    bt.set_defaults(func=cmd_backtest)
 
     return p
 
