@@ -7,6 +7,7 @@ from collections import defaultdict
 import numpy as np
 
 from .course_key import distance_band
+from .jv_values import agari_seconds, body_weight_kg, clean_code, corner_average, futan_kg, weight_delta_kg
 from .lgbm_model import FEATURE_NAMES, relevance
 
 
@@ -49,15 +50,6 @@ def _num(row: dict, *keys: str) -> float | None:
         except (TypeError, ValueError):
             continue
     return None
-
-
-def _agari(row: dict) -> float:
-    raw = _num(row, "HaronTimeL3", "Agari", "agari", "TimeL3")
-    if raw is None:
-        return 0.0
-    if raw > 100:
-        raw = raw / 10.0
-    return raw
 
 
 def _days_between(newer: str, older: str) -> float:
@@ -117,24 +109,15 @@ def feature_vector(past: list[dict], today: dict) -> np.ndarray:
     same_track_last = 1.0 if last and track and str(last.get("TrackCD") or "") == track else 0.0
     umaban = _num(today, "Umaban", "umaban") or 0.0
     field_size = float(today.get("field_size") or 0.0)
-    weight = _num(last, "BaTaiju", "bataiju", "weight") or 0.0
-    zogen = _num(last, "ZogenFugo", "Zogen", "zogen") or 0.0
-    # ZogenFugo may be a sign code; use ZogenSa if present
-    zogen_sa = _num(last, "ZogenSa", "zogen_sa")
-    weight_delta = zogen_sa if zogen_sa is not None else zogen
-    futan = _num(today, "Futan", "futan", "burden") or 0.0
-    if futan > 70:
-        futan = futan / 10.0
-    jockey_now = str(today.get("KisyuCode") or today.get("kisyu") or "")
-    jockey_last = str(last.get("KisyuCode") or last.get("kisyu") or "") if last else ""
+    if not field_size:
+        field_size = _num(today, "SyussoTosu") or 0.0
+    weight = body_weight_kg(last) if last else 0.0
+    weight_delta = weight_delta_kg(last) if last else 0.0
+    futan = futan_kg(today)
+    jockey_now = clean_code(today.get("KisyuCode") or today.get("kisyu"))
+    jockey_last = clean_code(last.get("KisyuCode") or last.get("kisyu")) if last else ""
     same_jockey = 1.0 if jockey_now and jockey_now == jockey_last else 0.0
-    corners = [
-        _num(last, k)
-        for k in ("Jyuni1c", "Jyuni2c", "Jyuni3c", "Jyuni4c")
-        if last
-    ]
-    corners = [c for c in corners if c is not None]
-    last_corner = sum(corners) / len(corners) if corners else 0.0
+    last_corner = corner_average(last) if last else 0.0
 
     vec = np.array(
         [
@@ -155,7 +138,7 @@ def feature_vector(past: list[dict], today: dict) -> np.ndarray:
             same_track_last,
             umaban / 18.0,
             field_size,
-            _agari(last) if last else 0.0,
+            agari_seconds(last) if last else 0.0,
             weight,
             weight_delta,
             futan,

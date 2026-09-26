@@ -56,10 +56,11 @@ python -m unittest discover -s tests -v
 ## 手元で次にやること
 
 1. `python -m keiba_next inspect --db "C:\path\to\jv_data.db"`
-2. 列名が違えば `HaronTimeL3` `BaTaiju` `ZogenSa` `Futan` `KisyuCode` `Jyuni1c`〜`Jyuni4c` を実DBに合わせる
-3. `train` してから `backtest --until YYYYMMDD --min-gap 0.15`
-4. 特徴を足したあとは、必ず `train` からやり直す
-5. Logic Horse との切替判断は、見送りを含む回収が現行以上になってから
+2. `python -m keiba_next verify --db "C:\path\to\jv_data.db"`
+3. 列名が違えば `HaronTimeL3` `BaTaiju` `ZogenSa` `Futan` `KisyuCode` `Jyuni1c`〜`Jyuni4c` を実DBに合わせる
+4. `train` してから `backtest --until YYYYMMDD --min-gap 0.15`
+5. 特徴を足したあとは、必ず `train` からやり直す
+6. Logic Horse との切替判断は、見送りを含む回収が現行以上になってから
 
 ```bat
 cd next
@@ -70,3 +71,24 @@ python -m keiba_next predict --db "C:\path\to\jv_data.db" --date YYYYMMDD --mode
 ```
 
 詳しい制約は `docs/dev-assistant-brief.md`。システムの説明は `docs/lightgbm-system.md`。起動手順は `docs/local-setup.md`。
+
+## 続き: DBの読み取り照合
+
+`verify` は EveryDB2 / JV-Data の SQLite を読み、次が一致するかを見る。
+
+- テーブルは `N_RACE` / `N_UMA_RACE` / `N_HARAI` に加え、`x_RACE` 系も検出する
+- 出馬表（データ区分2）と月曜確定（区分7）が両方ある馬は、確定行だけ残す。取消・除外・中止は出走馬から外す
+- レースキーは文字の `09` と数値の `9` をゼロ埋めで結ぶ
+- 1着の馬番が、払戻の月曜行 `PayTansyoUmaban1`（同着なら2・3も）と一致するか
+- 過去走が当該日より前だけか
+- `348` は上がり34.8秒、`999` は欠損、`560` は斤量56.0kg、`ZogenFugo` の `-` と `ZogenSa` で馬体増減
+
+このクラウド環境には `jv_data.db` も `jv.data.db` も無かった。照合の動作確認は EveryDB2 形のサンプルDBで行い、テスト13件は成功している。実ファイルは手元のパスを `--db` に渡す。
+
+```bat
+cd next
+.venv\Scripts\activate
+python -m keiba_next verify --db "C:\path\to\jv_data.db"
+```
+
+`ok` が false のときは `mismatches` を開発チャットに貼る。列が足りないだけなら `columns.missing` を見る。学習特徴に単勝オッズは入れていない。`Odds` はバックテストの回収計算用にだけ小数へ戻す。
