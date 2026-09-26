@@ -97,6 +97,24 @@ class LgbmTests(unittest.TestCase):
             float(changed[names.index("dist_delta")]),
         )
 
+    def test_rentai_rate_counts_second_place(self) -> None:
+        past = [
+            {"Year": 2026, "MonthDay": 101, "JyoCD": "09", "Kyori": 2000, "TrackCD": "1", "KakuteiJyuni": "2"},
+            {"Year": 2026, "MonthDay": 201, "JyoCD": "09", "Kyori": 2000, "TrackCD": "1", "KakuteiJyuni": "2"},
+            {"Year": 2026, "MonthDay": 301, "JyoCD": "05", "Kyori": 1200, "TrackCD": "2", "KakuteiJyuni": "5"},
+        ]
+        today = {"Year": 2026, "MonthDay": 601, "JyoCD": "09", "Kyori": 2000, "TrackCD": "1", "Umaban": 1}
+        vec = feature_vector(past, today)
+        names = list(FEATURE_NAMES)
+        self.assertEqual(float(vec[names.index("win_rate")]), 0.0)
+        self.assertAlmostEqual(float(vec[names.index("rentai_rate")]), 2 / 3)
+        self.assertAlmostEqual(float(vec[names.index("same_jyo_rentai_rate")]), 1.0)
+        self.assertEqual(float(vec[names.index("same_jyo_win_rate")]), 0.0)
+        self.assertGreater(
+            float(vec[names.index("rentai_rate")]),
+            float(vec[names.index("win_rate")]),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

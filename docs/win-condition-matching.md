@@ -78,7 +78,7 @@ JV `RA` から今走をキー化する:
 ```text
 for 各出走馬:
   win_fit = 0
-  + score(同 course_key の過去1着・複勝)
+  + score(同 course_key の過去1着・連対・複勝)  # 重みは 1着 > 連対 > 複勝
   + score(同場×芝ダ)
   + score(距離帯一致)
   + score(想定脚質 × 今走の勝ちやすい枠帯)  # 場×距離の枠別勝率表と照合

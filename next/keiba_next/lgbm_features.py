@@ -76,8 +76,10 @@ def feature_vector(past: list[dict], today: dict) -> np.ndarray:
     finishes = [f for f in (_finish(r) for r in past) if f is not None]
     n = len(finishes)
     wins = sum(1 for f in finishes if f == 1)
+    rentai = sum(1 for f in finishes if f <= 2)
     places = sum(1 for f in finishes if f <= 3)
     win_rate = wins / n if n else 0.0
+    rentai_rate = rentai / n if n else 0.0
     place_rate = places / n if n else 0.0
     inv_avg = (1.0 / (sum(finishes) / n)) if finishes else 0.0
 
@@ -86,20 +88,26 @@ def feature_vector(past: list[dict], today: dict) -> np.ndarray:
     band = distance_band(dist) if dist else ""
     track = str(today.get("TrackCD") or today.get("track") or "")
 
-    def _subset_win_rate(pred) -> float:
+    def _subset_rate(pred, max_finish: int) -> float:
         sub = [r for r in past if pred(r) and _finish(r) is not None]
         if not sub:
             return 0.0
-        return sum(1 for r in sub if _finish(r) == 1) / len(sub)
+        return sum(1 for r in sub if (_finish(r) or 99) <= max_finish) / len(sub)
 
-    same_jyo = _subset_win_rate(lambda r: str(r.get("JyoCD") or "") == jyo and jyo != "")
-    same_dist = _subset_win_rate(
-        lambda r: bool(band)
-        and distance_band(int(r.get("Kyori") or r.get("distance") or 0)) == band
-    )
-    same_track = _subset_win_rate(
-        lambda r: track != "" and str(r.get("TrackCD") or r.get("track") or "") == track
-    )
+    def _same_jyo(r: dict) -> bool:
+        return str(r.get("JyoCD") or "") == jyo and jyo != ""
+
+    def _same_dist(r: dict) -> bool:
+        return bool(band) and distance_band(int(r.get("Kyori") or r.get("distance") or 0)) == band
+
+    def _same_track(r: dict) -> bool:
+        return track != "" and str(r.get("TrackCD") or r.get("track") or "") == track
+    same_jyo = _subset_rate(_same_jyo, 1)
+    same_dist = _subset_rate(_same_dist, 1)
+    same_track = _subset_rate(_same_track, 1)
+    same_jyo_rentai = _subset_rate(_same_jyo, 2)
+    same_dist_rentai = _subset_rate(_same_dist, 2)
+    same_track_rentai = _subset_rate(_same_track, 2)
     wop = (win_rate / place_rate) if place_rate > 0 else 0.0
 
     last = past[-1] if past else {}
@@ -132,11 +140,15 @@ def feature_vector(past: list[dict], today: dict) -> np.ndarray:
         [
             n,
             win_rate,
+            rentai_rate,
             place_rate,
             inv_avg,
             same_jyo,
             same_dist,
             same_track,
+            same_jyo_rentai,
+            same_dist_rentai,
+            same_track_rentai,
             wop,
             days,
             dist_delta,

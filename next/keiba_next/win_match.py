@@ -44,14 +44,19 @@ class HorseWinProfile:
     ketto: str
     starts: int = 0
     wins: int = 0
+    rentai: int = 0  # top2
     places: int = 0  # top3
-    by_course: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "places": 0}))
-    by_coarse: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "places": 0}))
-    by_gate: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "places": 0}))
+    by_course: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "rentai": 0, "places": 0}))
+    by_coarse: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "rentai": 0, "places": 0}))
+    by_gate: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: {"starts": 0, "wins": 0, "rentai": 0, "places": 0}))
 
     @property
     def win_rate(self) -> float:
         return self.wins / self.starts if self.starts else 0.0
+
+    @property
+    def rentai_rate(self) -> float:
+        return self.rentai / self.starts if self.starts else 0.0
 
     @property
     def place_rate(self) -> float:
@@ -84,25 +89,28 @@ def build_profiles(past_by_horse: dict[str, list[dict]], race_meta_by_id: dict[s
             prof.starts += 1
             if finish == 1:
                 prof.wins += 1
+            if finish <= 2:
+                prof.rentai += 1
             if finish <= 3:
                 prof.places += 1
             for keystore, key in (
                 (prof.by_course, ck.as_key()),
                 (prof.by_coarse, ck.coarse_key()),
             ):
-                keystore[key]["starts"] += 1
-                if finish == 1:
-                    keystore[key]["wins"] += 1
-                if finish <= 3:
-                    keystore[key]["places"] += 1
-            gb = _gate_band(_umaban(run))
-            prof.by_gate[gb]["starts"] += 1
-            if finish == 1:
-                prof.by_gate[gb]["wins"] += 1
-            if finish <= 3:
-                prof.by_gate[gb]["places"] += 1
+                _bump(keystore[key], finish)
+            _bump(prof.by_gate[_gate_band(_umaban(run))], finish)
         profiles[ketto] = prof
     return profiles
+
+
+def _bump(bucket: dict[str, int], finish: int) -> None:
+    bucket["starts"] += 1
+    if finish == 1:
+        bucket["wins"] += 1
+    if finish <= 2:
+        bucket["rentai"] += 1
+    if finish <= 3:
+        bucket["places"] += 1
 
 
 def _rate(d: dict[str, int], kind: str) -> float:
@@ -119,19 +127,25 @@ def match_win_fit(profile: HorseWinProfile, course: CourseKey, umaban: int | Non
     gate = profile.by_gate.get(_gate_band(umaban), {})
 
     score = 0.0
-    # 同条件実績
+    # 同条件実績。重みは 1着 > 連対（2着以内） > 複勝（3着以内）。
     if fine.get("starts", 0) >= 1:
-        score += 40 * _rate(fine, "wins") + 15 * _rate(fine, "places")
+        score += 40 * _rate(fine, "wins") + 22 * _rate(fine, "rentai") + 6 * _rate(fine, "places")
         score += min(fine.get("starts", 0), 3) * 2
     elif coarse.get("starts", 0) >= 1:
-        score += 25 * _rate(coarse, "wins") + 10 * _rate(coarse, "places")
+        score += 25 * _rate(coarse, "wins") + 14 * _rate(coarse, "rentai") + 4 * _rate(coarse, "places")
     else:
-        score += 5 * profile.win_rate  # サンプル不足は控えめ
+        score += 5 * profile.win_rate + 4 * profile.rentai_rate
 
+    score += 12 * profile.rentai_rate
     score += 10 * profile.win_over_place
-    score += 8 * _rate(gate, "wins")
-    # 複勝はするが勝てない馬へのペナルティ
-    if profile.place_rate >= 0.35 and profile.win_rate < 0.08 and profile.starts >= 5:
+    score += 8 * _rate(gate, "wins") + 6 * _rate(gate, "rentai")
+    # 3着止まりが多く、連対まで来ない馬は勝ちきり軸にしない
+    if (
+        profile.place_rate >= 0.35
+        and profile.rentai_rate < 0.15
+        and profile.win_rate < 0.08
+        and profile.starts >= 5
+    ):
         score -= 8
     return score
 

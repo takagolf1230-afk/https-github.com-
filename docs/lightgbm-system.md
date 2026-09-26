@@ -34,7 +34,9 @@ PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYM
 
 | グループ | 名前 |
 | --- | --- |
-| 過去の勝ちきり | `n_starts` `win_rate` `place_rate` `inv_avg_finish` `same_jyo_win_rate` `same_dist_win_rate` `same_track_win_rate` `win_over_place` |
+| 過去の勝ちきり | `n_starts` `win_rate` `rentai_rate` `place_rate` `inv_avg_finish` `same_jyo_win_rate` `same_dist_win_rate` `same_track_win_rate` `same_jyo_rentai_rate` `same_dist_rentai_rate` `same_track_rentai_rate` `win_over_place` |
+
+連対率は2着以内の割合。重みは勝率、連対率、複勝率の順。3着止まりは連対に数えない。モデルを作り直すときは `train` をやり直す（特徴の本数が変わっている）。
 | 今走との条件差 | `days_since_last` `dist_delta` `same_track_last` `umaban_norm` `field_size` `futan` `same_jockey` |
 | 前走の内容 | `last_agari` `last_weight` `weight_delta` `last_corner_pos` |
 
