@@ -20,8 +20,11 @@ def _group_races(rows: list[dict]) -> dict[str, list[dict]]:
     return races
 
 
-def run_backtest(rows: list[dict], until: str, model_path: str | Path) -> dict:
-    """until (YYYYMMDD) 未満で学習、以降で◎（スコア1位）の単勝的中率を出す。"""
+def run_backtest(rows: list[dict], until: str, model_path: str | Path, min_gap: float = 0.0) -> dict:
+    """until 未満で学習し、以降のスコア1位の単勝的中率を出す。
+
+    min_gap 以上の差があるレースだけを的中率の母数にする（的中率特化の見送り）。
+    """
     train_rows = [r for r in rows if _date_key(r) < until and _finish(r) is not None]
     x, y, group = build_training_rows(train_rows)
     if len(y) < 4 or not group:
@@ -32,6 +35,8 @@ def run_backtest(rows: list[dict], until: str, model_path: str | Path) -> dict:
     races = _group_races(rows)
     hits = 0
     n = 0
+    pass_hits = 0
+    n_pass = 0
     stake = 0.0
     ret = 0.0
     details = []
@@ -48,21 +53,29 @@ def run_backtest(rows: list[dict], until: str, model_path: str | Path) -> dict:
                 past_by[ketto].append(r)
         matrix = build_predict_matrix(members, past_by, race)
         scores = predict_scores(model, matrix)
-        top_i = int(np.argmax(scores))
+        order = np.argsort(scores)[::-1]
+        top_i = int(order[0])
+        gap = float(scores[order[0]] - scores[order[1]]) if len(order) > 1 else 0.0
         top = members[top_i]
         won = _finish(top) == 1
+        taken = gap >= min_gap
         n += 1
         hits += int(won)
-        stake += 100.0
-        odds = top.get("TanOdds") or top.get("win_odds")
-        if won and odds not in (None, ""):
-            ret += 100.0 * float(odds)
+        if taken:
+            n_pass += 1
+            pass_hits += int(won)
+            stake += 100.0
+            odds = top.get("TanOdds") or top.get("win_odds")
+            if won and odds not in (None, ""):
+                ret += 100.0 * float(odds)
         details.append(
             {
                 "race": key,
                 "umaban": top.get("Umaban"),
                 "ketto": top.get("KettoNum"),
                 "won": won,
+                "gap": gap,
+                "taken": taken,
             }
         )
     return {
@@ -71,6 +84,10 @@ def run_backtest(rows: list[dict], until: str, model_path: str | Path) -> dict:
         "n_test": n,
         "top1_hits": hits,
         "top1_hit_rate": (hits / n) if n else 0.0,
+        "n_pass": n_pass,
+        "pass_hits": pass_hits,
+        "pass_hit_rate": (pass_hits / n_pass) if n_pass else 0.0,
+        "min_gap": min_gap,
         "stake": stake,
         "return": ret,
         "roi": (ret / stake) if stake and ret else None,

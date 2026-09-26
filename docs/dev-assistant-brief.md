@@ -19,7 +19,8 @@
 
 - `python -m keiba_next inspect --db <jv_data.db>`
 - `python -m keiba_next train --db <jv_data.db> --until YYYYMMDD --model out/ranker.txt`
-- `python -m keiba_next backtest --db <jv_data.db> --until YYYYMMDD --model out/ranker.txt`
+- `python -m keiba_next backtest --db <jv_data.db> --until YYYYMMDD --model out/ranker.txt --min-gap 0.15`
+- 特徴は着順そのものではなく、過去の勝ちきり・距離差・間隔・枠・頭数・上がり・馬体重・斤量・騎手・前走通過。的中率は `pass_hit_rate`（`--min-gap` 未満は見送り）。
 - `python -m keiba_next predict --db <jv_data.db> --date YYYYMMDD --model out/ranker.txt`
 
 頼むときは、エラーログか `inspect` の表一覧を貼る。やってほしいことは「列名を合わせる」「特徴量を足す」「バックテストを直す」のいずれかに限定する。

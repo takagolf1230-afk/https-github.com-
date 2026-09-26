@@ -43,6 +43,9 @@ keiba_next/
   tickets.py       # T1〜T7
   gates.py         # odds_floor / EV
   pipeline.py      # 1レース予想
+  lgbm_model.py    # 一着ラベルの Ranker
+  lgbm_features.py # 着順以外の多因子特徴
+  backtest.py      # 時系列の的中率（min_gap で見送り）
   fixture.py       # 開発用ミニDB
   cli.py           # CLI
 ```

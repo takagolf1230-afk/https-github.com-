@@ -14,7 +14,19 @@ FEATURE_NAMES = (
     "inv_avg_finish",
     "same_jyo_win_rate",
     "same_dist_win_rate",
+    "same_track_win_rate",
     "win_over_place",
+    "days_since_last",
+    "dist_delta",
+    "same_track_last",
+    "umaban_norm",
+    "field_size",
+    "last_agari",
+    "last_weight",
+    "weight_delta",
+    "futan",
+    "same_jockey",
+    "last_corner_pos",
 )
 
 

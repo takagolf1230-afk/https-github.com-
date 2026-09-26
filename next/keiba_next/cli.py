@@ -23,7 +23,7 @@ from keiba_next.db import (
 from keiba_next.backtest import run_backtest
 from keiba_next.fixture import build_fixture
 from keiba_next.lgbm_features import build_predict_matrix, build_training_rows
-from keiba_next.lgbm_model import load_ranker, predict_scores, scores_to_win_score, train_ranker
+from keiba_next.lgbm_model import FEATURE_NAMES, load_ranker, predict_scores, scores_to_win_score, train_ranker
 from keiba_next.pipeline import predict_race
 
 
@@ -137,7 +137,13 @@ def cmd_train(args: argparse.Namespace) -> int:
         print(json.dumps({"error": "not enough labeled rows", "n": int(len(y))}, ensure_ascii=False))
         return 1
     path = train_ranker(x, y, group, args.model)
-    print(json.dumps({"ok": True, "model": str(path), "rows": int(len(y)), "races": len(group)}, ensure_ascii=False))
+    print(json.dumps({
+        "ok": True,
+        "model": str(path),
+        "rows": int(len(y)),
+        "races": len(group),
+        "features": list(FEATURE_NAMES),
+    }, ensure_ascii=False))
     return 0
 
 
@@ -145,7 +151,7 @@ def cmd_backtest(args: argparse.Namespace) -> int:
     with connect(args.db) as conn:
         schema = detect_schema(conn)
         rows = _load_labeled_rows(conn, schema)
-    result = run_backtest(rows, args.until, args.model)
+    result = run_backtest(rows, args.until, args.model, min_gap=args.min_gap)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result.get("ok") else 1
 
@@ -183,6 +189,7 @@ def build_parser() -> argparse.ArgumentParser:
     bt.add_argument("--db", required=True)
     bt.add_argument("--until", required=True)
     bt.add_argument("--model", required=True)
+    bt.add_argument("--min-gap", type=float, default=0.0, help="このスコア差未満のレースは見送り")
     bt.set_defaults(func=cmd_backtest)
 
     return p

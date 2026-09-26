@@ -33,3 +33,17 @@ class BacktestTests(unittest.TestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["n_test"], 2)
         self.assertGreaterEqual(result["top1_hit_rate"], 0.5)
+        self.assertIn("pass_hit_rate", result)
+        self.assertEqual(result["n_pass"], 2)
+
+    def test_min_gap_skips_uncertain_races(self) -> None:
+        rows = []
+        for md in (101, 201, 301, 401, 501, 601):
+            rows.append(_row(md, 1, 1, "A", 1))
+            rows.append(_row(md, 1, 2, "B", 2))
+        result = run_backtest(rows, "20260501", Path("/tmp/keiba_next_bt_gap.txt"), min_gap=1e9)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["n_test"], 2)
+        self.assertEqual(result["n_pass"], 0)
+        self.assertEqual(result["pass_hit_rate"], 0.0)
+        self.assertTrue(all(not d["taken"] for d in result["details"]))

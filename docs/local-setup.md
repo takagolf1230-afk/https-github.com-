@@ -54,7 +54,7 @@ JRA-VAN から作った `jv_data.db` のフルパスを渡します。このリ�
 
 ```bash
 python -m keiba_next inspect --db "C:\path\to\jv_data.db"
-python -m keiba_next backtest --db "C:\path\to\jv_data.db" --until 20260101 --model out/ranker.txt
+python -m keiba_next backtest --db "C:\path\to\jv_data.db" --until 20260101 --model out/ranker.txt --min-gap 0.15
 python -m keiba_next predict --db "C:\path\to\jv_data.db" --date 20260921 --model out/ranker.txt
 ```
 
@@ -68,7 +68,7 @@ python -m keiba_next predict --db "C:\path\to\jv_data.db" --date 20260921 --mode
 
 - `inspect` の JSON
 - ターミナルのエラー全文
-- `backtest` の `top1_hit_rate`
+- `backtest` の `top1_hit_rate` と `pass_hit_rate`
 
 貼らないもの:
 
