@@ -2,6 +2,9 @@
 
 的中寄り（高確率レースに絞り、レースの質で券種を変える）の調査メモです。
 
+**手元で動かす:** [docs/local-setup.md](docs/local-setup.md)  
+**開発チャットに貼る文:** [docs/dev-assistant-brief.md](docs/dev-assistant-brief.md)
+
 **主ドキュメント（本プランの成果物）:** [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
 
 **運用方針:** 現行予想はそのまま。新系統は `next/` で別構築。  

@@ -12,11 +12,15 @@
 
 ## セットアップ
 
+手元PCの手順は [docs/local-setup.md](../docs/local-setup.md)。  
+Gemini / Claude / ChatGPT には [docs/dev-assistant-brief.md](../docs/dev-assistant-brief.md) を貼る。印は出させない。
+
 ```bash
 cd next
-PYTHONPATH=. python3 -m keiba_next fixture --out out/fixture.db
-PYTHONPATH=. python3 -m keiba_next ping --db out/fixture.db
-PYTHONPATH=. python3 -m keiba_next predict --db out/fixture.db --date 20260921
+python -m venv .venv
+pip install -r requirements.txt
+python -m keiba_next fixture --out out/fixture.db
+python -m keiba_next ping --db out/fixture.db
 ```
 
 実データ:
