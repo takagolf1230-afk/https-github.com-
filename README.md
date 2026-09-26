@@ -12,6 +12,7 @@
 - [デュアル運用（現行固定・新系統並行）](docs/dual-system-architecture.md)
 - [現行と新系統で何が変わるか](docs/what-changes-from-current.md)
 - [現行LLMパイプラインの診断](docs/llm-pipeline-diagnosis.md)
+- [移行プラン（現行LLM → 新系統）](docs/rollout-plan.md)
 - [勝ちきり条件の抽出と出走馬照合](docs/win-condition-matching.md)
 - [データソース方針（JRA公式）](docs/jra-official-data-source.md)
 - [他予想家の印・軸・買い方の当てはめ](docs/tipster-pattern-mapping.md)
