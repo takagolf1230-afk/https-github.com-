@@ -12,6 +12,7 @@
 
 - [デュアル運用（現行固定・新系統並行）](docs/dual-system-architecture.md)
 - [現行と新系統で何が変わるか](docs/what-changes-from-current.md)
+- [別系統 LightGBM](docs/lightgbm-system.md)
 - [他予想家のAI活用](docs/how-others-use-ai.md)
 - [現行LLMパイプラインの診断](docs/llm-pipeline-diagnosis.md)
 - [移行プラン（現行LLM → 新系統）](docs/rollout-plan.md)

@@ -21,6 +21,8 @@ from keiba_next.db import (
     table_columns,
 )
 from keiba_next.fixture import build_fixture
+from keiba_next.lgbm_features import build_predict_matrix, build_training_rows
+from keiba_next.lgbm_model import load_ranker, predict_scores, scores_to_win_score, train_ranker
 from keiba_next.pipeline import predict_race
 
 
@@ -91,16 +93,50 @@ def cmd_predict(args: argparse.Namespace) -> int:
                 except Exception:
                     odds_lookup = {}
 
+            model_scores = None
+            if getattr(args, "model", None):
+                booster = load_ranker(args.model)
+                matrix = build_predict_matrix(entries, past_by, race)
+                raw = predict_scores(booster, matrix)
+                model_scores = scores_to_win_score(raw).tolist()
             pred = predict_race(
                 race,
                 entries,
                 past_by,
                 race_id=rid,
                 odds_lookup=odds_lookup or None,
+                model_win_scores=model_scores,
             )
             results.append(pred.to_dict())
 
     print(json.dumps(results, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _load_labeled_rows(conn, schema) -> list[dict]:
+    sql = f'''
+        SELECT u.*, r.Kyori, r.TrackCD
+        FROM "{schema.uma_race}" u
+        JOIN "{schema.race}" r
+          ON u.Year=r.Year AND u.MonthDay=r.MonthDay AND u.JyoCD=r.JyoCD
+         AND u.Kaiji=r.Kaiji AND u.Nichiji=r.Nichiji AND u.RaceNum=r.RaceNum
+        WHERE u.KakuteiJyuni IS NOT NULL
+    '''
+    return [dict(r) for r in conn.execute(sql).fetchall()]
+
+
+def cmd_train(args: argparse.Namespace) -> int:
+    with connect(args.db) as conn:
+        schema = detect_schema(conn)
+        rows = _load_labeled_rows(conn, schema)
+    if args.until:
+        rows = [r for r in rows if f"{int(r['Year']):04d}{int(r['MonthDay']):04d}" < args.until]
+    x, y, group = build_training_rows(rows)
+    if len(y) < 4 or not group:
+        print(json.dumps({"error": "not enough labeled rows", "n": int(len(y))}, ensure_ascii=False))
+        return 1
+    path = train_ranker(x, y, group, args.model)
+    print(json.dumps({"ok": True, "model": str(path), "rows": int(len(y)), "races": len(group)}, ensure_ascii=False))
     return 0
 
 
@@ -124,7 +160,14 @@ def build_parser() -> argparse.ArgumentParser:
     pred.add_argument("--db", required=True)
     pred.add_argument("--date", required=True, help="YYYYMMDD")
     pred.add_argument("--race-num", type=int, default=None)
+    pred.add_argument("--model", default=None, help="LightGBM モデルファイル")
     pred.set_defaults(func=cmd_predict)
+
+    train = sub.add_parser("train", help="LightGBM Ranker を学習")
+    train.add_argument("--db", required=True)
+    train.add_argument("--model", required=True)
+    train.add_argument("--until", default=None, help="この日付未満だけ学習 YYYYMMDD")
+    train.set_defaults(func=cmd_train)
 
     return p
 

@@ -23,7 +23,8 @@ PYTHONPATH=. python3 -m keiba_next predict --db out/fixture.db --date 20260921
 
 ```bash
 PYTHONPATH=. python3 -m keiba_next inspect --db /path/to/jv_data.db
-PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD
+PYTHONPATH=. python3 -m keiba_next train --db /path/to/jv_data.db --until YYYYMMDD --model out/ranker.txt
+PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD --model out/ranker.txt
 ```
 
 ## モジュール
