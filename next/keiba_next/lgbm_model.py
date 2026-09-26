@@ -19,10 +19,8 @@ FEATURE_NAMES = (
 
 
 def relevance(finish: int) -> int:
-    """1着ほど高い。4着以下は0。"""
-    if finish <= 0:
-        return 0
-    return max(0, 4 - finish)
+    """一着特化。1着だけ 1、それ以外は 0。"""
+    return 1 if finish == 1 else 0
 
 
 def train_ranker(

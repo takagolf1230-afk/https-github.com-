@@ -6,7 +6,7 @@ from pathlib import Path
 from keiba_next.db import connect, detect_schema
 from keiba_next.fixture import build_fixture
 from keiba_next.lgbm_features import build_training_rows
-from keiba_next.lgbm_model import predict_scores, scores_to_win_score, train_ranker, load_ranker
+from keiba_next.lgbm_model import predict_scores, relevance, scores_to_win_score, train_ranker, load_ranker
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +15,11 @@ MODEL = ROOT / "out" / "ranker.txt"
 
 
 class LgbmTests(unittest.TestCase):
+    def test_relevance_is_win_only(self) -> None:
+        self.assertEqual(relevance(1), 1)
+        self.assertEqual(relevance(2), 0)
+        self.assertEqual(relevance(3), 0)
+
     def test_train_and_score_shape(self) -> None:
         build_fixture(FIX)
         with connect(FIX) as conn:
