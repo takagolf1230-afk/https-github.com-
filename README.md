@@ -11,6 +11,7 @@
 
 - [デュアル運用（現行固定・新系統並行）](docs/dual-system-architecture.md)
 - [現行と新系統で何が変わるか](docs/what-changes-from-current.md)
+- [他予想家のAI活用](docs/how-others-use-ai.md)
 - [現行LLMパイプラインの診断](docs/llm-pipeline-diagnosis.md)
 - [移行プラン（現行LLM → 新系統）](docs/rollout-plan.md)
 - [勝ちきり条件の抽出と出走馬照合](docs/win-condition-matching.md)
