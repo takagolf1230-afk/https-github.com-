@@ -27,6 +27,7 @@ python -m keiba_next ping --db out/fixture.db
 
 ```bash
 PYTHONPATH=. python3 -m keiba_next inspect --db /path/to/jv_data.db
+PYTHONPATH=. python3 -m keiba_next verify --db /path/to/jv_data.db
 PYTHONPATH=. python3 -m keiba_next train --db /path/to/jv_data.db --until YYYYMMDD --model out/ranker.txt
 PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYMMDD --model out/ranker.txt
 ```
@@ -35,7 +36,8 @@ PYTHONPATH=. python3 -m keiba_next predict --db /path/to/jv_data.db --date YYYYM
 
 ```text
 keiba_next/
-  db.py            # JV DB 読み取り・スキーマ検出
+  db.py            # JV DB 読み取り・スキーマ検出・verify
+  jv_values.py     # 上がり・斤量・馬体重のJV数値を実数に戻す
   course_key.py    # レース・競馬場条件キー
   win_match.py     # 勝ちきり照合 → win_score
   race_pattern.py  # Solid/AxisEdge/Mid/Chaos

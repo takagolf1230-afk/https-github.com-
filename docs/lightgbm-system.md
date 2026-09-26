@@ -60,5 +60,5 @@ PYTHONPATH=. python3 -m keiba_next backtest --db /path/to/jv_data.db --until 202
 
 ## まだ後で足すもの
 
-- 実DBの列名差の吸収（上がり・通過・馬体重が別名のとき）
-- 券種別の回収率（払戻テーブル HR との結合）
+- 券種別の回収率（払戻テーブル HR のワイド・三連系との結合）。単勝は `verify` で馬番一致を見ている
+- 実ファイル `jv_data.db` での `train` / `backtest`（この環境にはDBが無い）

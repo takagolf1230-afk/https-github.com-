@@ -17,9 +17,12 @@ from keiba_next.db import (
     fetch_entries,
     fetch_past_runs,
     fetch_races_on_date,
+    load_joined_runs,
     ping,
     table_columns,
+    verify_db,
 )
+from keiba_next.jv_values import norm_code
 from keiba_next.backtest import run_backtest
 from keiba_next.fixture import build_fixture
 from keiba_next.lgbm_features import build_predict_matrix, build_training_rows
@@ -28,11 +31,14 @@ from keiba_next.pipeline import predict_race
 
 
 def _race_id_from_row(r: dict) -> str:
-    if "race_id" in r:
+    if "race_id" in r and r["race_id"]:
         return str(r["race_id"])
     y = int(r["Year"])
     md = int(r["MonthDay"])
-    return f"{y:04d}{md:04d}{r['JyoCD']}{r['Kaiji']}{r['Nichiji']}{int(r['RaceNum']):02d}"
+    return (
+        f"{y:04d}{md:04d}{norm_code(r.get('JyoCD'), 2)}{norm_code(r.get('Kaiji'), 2)}"
+        f"{norm_code(r.get('Nichiji'), 2)}{norm_code(r.get('RaceNum'), 2)}"
+    )
 
 
 def cmd_ping(args: argparse.Namespace) -> int:
@@ -115,15 +121,14 @@ def cmd_predict(args: argparse.Namespace) -> int:
 
 
 def _load_labeled_rows(conn, schema) -> list[dict]:
-    sql = f'''
-        SELECT u.*, r.Kyori, r.TrackCD
-        FROM "{schema.uma_race}" u
-        JOIN "{schema.race}" r
-          ON u.Year=r.Year AND u.MonthDay=r.MonthDay AND u.JyoCD=r.JyoCD
-         AND u.Kaiji=r.Kaiji AND u.Nichiji=r.Nichiji AND u.RaceNum=r.RaceNum
-        WHERE u.KakuteiJyuni IS NOT NULL
-    '''
-    return [dict(r) for r in conn.execute(sql).fetchall()]
+    return load_joined_runs(conn, schema)
+
+
+def cmd_verify(args: argparse.Namespace) -> int:
+    with connect(args.db) as conn:
+        report = verify_db(conn, sample_races=args.sample_races)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report.get("ok") else 1
 
 
 def cmd_train(args: argparse.Namespace) -> int:
@@ -167,6 +172,11 @@ def build_parser() -> argparse.ArgumentParser:
     insp = sub.add_parser("inspect", help="スキーマ自動検出")
     insp.add_argument("--db", required=True)
     insp.set_defaults(func=cmd_inspect)
+
+    ver = sub.add_parser("verify", help="着順・払戻・過去走が正しく読めるか照合")
+    ver.add_argument("--db", required=True)
+    ver.add_argument("--sample-races", type=int, default=20)
+    ver.set_defaults(func=cmd_verify)
 
     fix = sub.add_parser("fixture", help="開発用ミニDBを生成")
     fix.add_argument("--out", default="next/out/fixture.db")

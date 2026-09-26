@@ -18,6 +18,7 @@
 いまのコマンド:
 
 - `python -m keiba_next inspect --db <jv_data.db>`
+- `python -m keiba_next verify --db <jv_data.db>`
 - `python -m keiba_next train --db <jv_data.db> --until YYYYMMDD --model out/ranker.txt`
 - `python -m keiba_next backtest --db <jv_data.db> --until YYYYMMDD --model out/ranker.txt --min-gap 0.15`
 - 特徴は着順そのものではなく、勝率・連対率・複勝率（重みはこの順）、距離差・間隔・枠・頭数・上がり・馬体重・斤量・騎手・前走通過。的中率は `pass_hit_rate`（`--min-gap` 未満は見送り）。
