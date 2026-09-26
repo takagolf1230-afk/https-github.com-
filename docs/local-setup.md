@@ -2,11 +2,13 @@
 
 現行の Logic Horse とは別フォルダです。予想の印は LightGBM が出し、Gemini / Claude / ChatGPT は開発の補助だけに使います。
 
-## 1. デスクトップに置く
+## 1. デスクトップに新しいフォルダを作る
 
-配布ZIP `keiba-next-desktop.zip` をデスクトップに展開します。中の `setup-local.bat` をダブルクリックすると、仮想環境の作成、パッケージ導入、サンプルDBでの起動確認まで進みます。
+開発場所はデスクトップの `keiba-next` だけです。現行の Logic Horse のフォルダとは別にします。
 
-更新を取り続ける場合は、デスクトップで次を実行します。
+ZIPをどこかに展開し、中の `setup-local.bat` をダブルクリックします。スクリプトがデスクトップに `keiba-next` を作り、そこへ一式を置いてから、仮想環境・パッケージ・サンプル起動まで進めます。以後の編集はこのフォルダで行います。
+
+最初から git で置く場合:
 
 ```bat
 cd %USERPROFILE%\Desktop
@@ -16,7 +18,7 @@ git checkout cursor/keiba-hit-rate-survey-a9ec
 setup-local.bat
 ```
 
-以後このフォルダで開発します。`jv_data.db` はリポジトリの外に置きます。
+`jv_data.db` は `keiba-next` の外に置きます。
 
 ## 2. Python
 

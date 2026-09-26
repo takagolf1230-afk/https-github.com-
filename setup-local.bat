@@ -1,6 +1,29 @@
 @echo off
-setlocal
-cd /d "%~dp0next"
+setlocal EnableExtensions
+cd /d "%~dp0"
+
+for /f "delims=" %%D in ('powershell -NoProfile -Command "[Environment]::GetFolderPath('Desktop')"') do set "DESKTOP=%%D"
+if not defined DESKTOP set "DESKTOP=%USERPROFILE%\Desktop"
+
+set "DEV=%DESKTOP%\keiba-next"
+set "SRC=%~dp0"
+if "%SRC:~-1%"=="\" set "SRC=%SRC:~0,-1%"
+
+if /I "%SRC%"=="%DEV%" goto :setup
+
+echo デスクトップに開発フォルダを作ります:
+echo %DEV%
+if not exist "%DEV%" mkdir "%DEV%"
+if not exist "%DEV%" goto :fail
+robocopy "%SRC%" "%DEV%" /E /XD .git .venv venv __pycache__ out /XF *.db /NFL /NDL /NJH /NJS /nc /ns /np
+if errorlevel 8 goto :fail
+cd /d "%DEV%"
+call "%DEV%\setup-local.bat"
+exit /b %errorlevel%
+
+:setup
+echo 開発フォルダ: %DEV%
+cd /d "%DEV%\next"
 
 set "PY=python"
 py -3 -c "import sys" >nul 2>&1 && set "PY=py -3"
@@ -32,7 +55,9 @@ python -m unittest discover -s tests -v
 if errorlevel 1 goto :fail
 
 echo.
-echo サンプルは動きました。次は本番DBです。jv_data.db はこのフォルダに置かないでください。
+echo 開発フォルダはここです:
+echo %DEV%
+echo サンプルは動きました。jv_data.db はこのフォルダに置かないでください。
 echo python -m keiba_next inspect --db "C:\path\to\jv_data.db"
 echo python -m keiba_next train --db "C:\path\to\jv_data.db" --until 20260101 --model out/ranker.txt
 echo.
@@ -41,6 +66,6 @@ pause
 exit /b 0
 
 :fail
-echo 起動確認に失敗しました。この画面の文を開発チャットに貼ってください。
+echo 開発フォルダの作成か起動確認に失敗しました。この画面の文を開発チャットに貼ってください。
 pause
 exit /b 1
