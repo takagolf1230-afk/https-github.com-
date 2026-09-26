@@ -70,7 +70,13 @@ python -m keiba_next predict --db "C:\path\to\jv_data.db" --date 20260921 --mode
 
 `inspect` がテーブル名エラーになったら、その出力を開発用チャットに貼って列名合わせを依頼します。
 
-## 5. チャットAIの使い方
+## 5. ローカルのCursorチャットへログを渡す
+
+これまでの経緯は [cursor-dev-log.md](cursor-dev-log.md) にまとめてある。デスクトップの `keiba-next` を Cursor で開き、ローカルの新しいチャットでこのファイルを添付する。
+
+クラウドのチャットごと移す場合は、エージェントの作業完了後に Agents ウィンドウで Move to → Local を選ぶ。実行中は出ない。
+
+## 6. チャットAIの使い方
 
 印を出させません。コードとエラーの相談だけです。新しいチャットの最初に [dev-assistant-brief.md](dev-assistant-brief.md) を貼ってください。
 

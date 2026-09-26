@@ -3,6 +3,7 @@
 的中寄り（高確率レースに絞り、レースの質で券種を変える）の調査メモです。
 
 **デスクトップで開発する:** `setup-local.bat` がデスクトップに `keiba-next` フォルダを作る。手順は [docs/local-setup.md](docs/local-setup.md)  
+**ローカルCursorに渡す開発ログ:** [docs/cursor-dev-log.md](docs/cursor-dev-log.md)  
 **開発チャットに貼る文:** [docs/dev-assistant-brief.md](docs/dev-assistant-brief.md)
 
 **主ドキュメント（本プランの成果物）:** [データ分析型競馬予想の調査（的中寄り）](docs/keiba-data-prediction-survey.md)
