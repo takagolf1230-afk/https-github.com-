@@ -50,9 +50,10 @@ with t2:
         picks = an.multi_choice_counts(df, cols["chore_pick"])
         st.dataframe(pd.DataFrame({"選択数": picks, "選択率(%)": (picks / len(df) * 100).round(1)}), width="stretch")
         st.bar_chart(picks)
-        if cols.get("role"):
-            st.subheader("職種別の選択率(%)")
-            st.dataframe(an.pick_by_group(df, cols["chore_pick"], cols["role"]), width="stretch")
+        for gkey, glabel in (("position", "立場別(若手/中堅/管理職)"), ("role", "職種別")):
+            if cols.get(gkey):
+                st.subheader(f"{glabel}の選択率(%)")
+                st.dataframe(an.pick_by_group(df, cols["chore_pick"], cols[gkey]), width="stretch")
     elif not burden or not desire:
         st.warning("「負担度」「解決意欲」のグリッド列、または「負担が大きい雑務」の列が見つかりません。")
     else:

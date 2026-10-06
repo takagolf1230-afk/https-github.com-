@@ -9,6 +9,7 @@ import pandas as pd
 # 列名の自動認識に使うキーワード(質問タイトルにこれらを含める。questionnaire.md 参照)
 KEYS = {
     "role": ["職種"],
+    "position": ["あなたの立場", "立場"],
     "experience": ["経験年数"],
     "facility": ["施設種別"],
     "authority": ["決裁", "決定権"],
