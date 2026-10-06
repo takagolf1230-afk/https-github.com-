@@ -69,7 +69,7 @@ with t2:
 with t3:
     vw = an.van_westendorp(df, cols)
     if not vw and cols.get("price_band"):
-        st.caption("簡易版: 「払ってもよい月額」の選択結果です。")
+        st.caption("簡易版: 「払ってもよい買い切り価格」の選択結果です。")
         pb = an.price_band_counts(df, cols["price_band"])
         st.dataframe(pb, width="stretch")
         st.bar_chart(pb["回答数"])
@@ -81,7 +81,7 @@ with t3:
         c = st.columns(4)
         for i, k in enumerate(["PMC(許容下限)", "OPP(最適価格)", "IPP(無差別価格)", "PME(許容上限)"]):
             c[i].metric(k, f"{vw[k]:,.0f}円" if not np.isnan(vw[k]) else "-")
-        st.line_chart(pd.DataFrame(vw["curves"], index=vw["grid"].round(0)), x_label="月額(円)", y_label="累積割合")
+        st.line_chart(pd.DataFrame(vw["curves"], index=vw["grid"].round(0)), x_label="価格(円)", y_label="累積割合")
         st.caption(f"有効回答 n={vw['n']}(価格の大小関係が矛盾する回答は除外)。"
                    "許容範囲は PMC〜PME。販売価格はこの範囲内で、OPP〜IPP付近を目安にします。"
                    "SNS回答は価格を低く答えがちなので、先行販売の申込みで検証してください。")

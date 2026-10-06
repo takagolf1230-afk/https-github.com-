@@ -18,7 +18,7 @@ KEYS = {
     "free_pain": ["困っていること"],
     "free_wish": ["あったらいい"],
     "chore_pick": ["負担が大きい雑務"],
-    "price_band": ["月額いくらまで"],
+    "price_band": ["いくらまで払えますか", "いくらまで"],
     "p_too_cheap": ["安すぎて"],
     "p_cheap": ["安い"],
     "p_expensive": ["高い"],
@@ -145,13 +145,21 @@ def keyword_counts(texts: pd.Series, keywords: list[str]) -> pd.DataFrame:
         columns=["キーワード", "件数"])
 
 
-PRICE_BAND_ORDER = ["払わない", "〜500円", "〜1,000円", "〜3,000円", "〜5,000円", "〜10,000円", "10,000円超"]
+def _band_value(label: str) -> float:
+    """価格帯ラベルを並べ替え用の数値にする。'払わない'→0, '〜3,000円'→3000, '50,000円超'→50000.5"""
+    if "払わない" in label:
+        return 0.0
+    m = re.search(r"(\d[\d,]*)", label)
+    if not m:
+        return float("inf")
+    v = float(m.group(1).replace(",", ""))
+    return v + 0.5 if "超" in label else v
 
 
 def price_band_counts(df: pd.DataFrame, col: str) -> pd.DataFrame:
-    """簡易版の価格質問(選択式)の集計。選択肢の並びは PRICE_BAND_ORDER 優先、累積(その価格以上を許容する割合)も返す。"""
+    """簡易版の価格質問(選択式)の集計。選択肢は金額の小さい順、累積(その価格以上を許容する割合)も返す。"""
     vc = df[col].value_counts()
-    order = [b for b in PRICE_BAND_ORDER if b in vc.index] + [b for b in vc.index if b not in PRICE_BAND_ORDER]
+    order = sorted(vc.index, key=_band_value)
     out = pd.DataFrame({"回答数": [int(vc[b]) for b in order]}, index=pd.Index(order, name="回答"))
     out["割合(%)"] = (out["回答数"] / out["回答数"].sum() * 100).round(1)
     out["この金額以上を許容(%)"] = (out["割合(%)"][::-1].cumsum()[::-1]).round(1)
