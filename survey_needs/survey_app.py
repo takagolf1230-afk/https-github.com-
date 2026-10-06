@@ -45,8 +45,16 @@ with t1:
             st.bar_chart(an.counts(df[cols[key]]))
 
 with t2:
-    if not burden or not desire:
-        st.warning("「負担度」「解決意欲」を含むグリッド質問の列が見つかりません。")
+    if cols.get("chore_pick") and (not burden or not desire):
+        st.caption("簡易版: 負担が大きい雑務として選ばれた回数です(多いほど需要の大きい候補)。")
+        picks = an.multi_choice_counts(df, cols["chore_pick"])
+        st.dataframe(pd.DataFrame({"選択数": picks, "選択率(%)": (picks / len(df) * 100).round(1)}), width="stretch")
+        st.bar_chart(picks)
+        if cols.get("role"):
+            st.subheader("職種別の選択率(%)")
+            st.dataframe(an.pick_by_group(df, cols["chore_pick"], cols["role"]), width="stretch")
+    elif not burden or not desire:
+        st.warning("「負担度」「解決意欲」のグリッド列、または「負担が大きい雑務」の列が見つかりません。")
     else:
         sc = an.chore_scores(df, burden, desire)
         st.caption("需要スコア = 平均負担度 × 平均解決意欲(最大25)。上位ほど「負担が大きく、お金を払ってでも解決したい」雑務です。")
@@ -60,7 +68,12 @@ with t2:
 
 with t3:
     vw = an.van_westendorp(df, cols)
-    if not vw:
+    if not vw and cols.get("price_band"):
+        st.caption("簡易版: 「払ってもよい月額」の選択結果です。")
+        pb = an.price_band_counts(df, cols["price_band"])
+        st.dataframe(pb, width="stretch")
+        st.bar_chart(pb["回答数"])
+    elif not vw:
         st.warning("価格の4質問(安すぎて/安い/高い/高すぎて)の列が見つかりません。列の割り当てを確認してください。")
     elif "grid" not in vw:
         st.warning(f"有効な回答が少なすぎます(n={vw['n']})。")
