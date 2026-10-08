@@ -75,7 +75,7 @@ with t3:
         st.dataframe(pb, width="stretch")
         st.bar_chart(pb["回答数"])
     elif not vw:
-        st.warning("価格の4質問(安すぎて/安い/高い/高すぎて)の列が見つかりません。列の割り当てを確認してください。")
+        st.info("この調査では価格を聞いていません（価格は、先行予約や聞き取りで確かめる想定です）。")
     elif "grid" not in vw:
         st.warning(f"有効な回答が少なすぎます(n={vw['n']})。")
     else:

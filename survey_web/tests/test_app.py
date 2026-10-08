@@ -15,7 +15,7 @@ import storage  # noqa: E402
 
 AUTH = {"Authorization": "Basic " + base64.b64encode(b"admin:pw-test").decode()}
 GOOD = {"role": "診療放射線技師", "position": "中堅", "chores": ["勤務表・シフト作成", "記録・書類作成"],
-        "price": "〜5,000円", "payer": "施設・部署", "pain": "勤務表に3時間かかる", "src": "x"}
+        "pain": "勤務表に3時間かかる", "wish": "勤務表の自動作成", "src": "x"}
 
 
 class T(unittest.TestCase):
@@ -48,7 +48,16 @@ class T(unittest.TestCase):
         self.assertEqual(len(storage.all_responses()), 0)
 
     def test_invalid_option_rejected(self):
-        self.assertEqual(self.c.post("/submit", data={**GOOD, "price": "〜1円"}).status_code, 400)
+        self.assertEqual(self.c.post("/submit", data={**GOOD, "position": "不明な立場"}).status_code, 400)
+
+    def test_optional_questions_can_be_empty(self):
+        d = {k: v for k, v in GOOD.items() if k not in ("pain", "wish")}
+        self.assertEqual(self.c.post("/submit", data=d).status_code, 302)
+
+    def test_no_price_or_payer_question(self):
+        titles = " ".join(q["title"] for q in survey.QUESTIONS)
+        self.assertNotIn("いくらまで", titles)
+        self.assertNotIn("負担しますか", titles)
 
     def test_honeypot_not_saved(self):
         self.c.post("/submit", data={**GOOD, "website": "http://spam"})
@@ -94,9 +103,10 @@ class T(unittest.TestCase):
         import analysis
         df = pd.read_csv(io.StringIO(text.lstrip("﻿")))
         cols = analysis.detect_columns(df)
-        for key in ("role", "position", "chore_pick", "price_band", "payer", "free_pain"):
+        for key in ("role", "position", "chore_pick", "free_pain", "free_wish"):
             self.assertIsNotNone(cols[key], key)
-        self.assertEqual(analysis.price_band_counts(df, cols["price_band"]).loc["〜5,000円", "回答数"], 3)
+        picks = analysis.multi_choice_counts(df, cols["chore_pick"])
+        self.assertEqual(picks["勤務表・シフト作成"], 3)
 
     def test_delete(self):
         self.c.post("/submit", data=GOOD)
