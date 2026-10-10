@@ -10,6 +10,7 @@ import pandas as pd
 KEYS = {
     "role": ["職種"],
     "position": ["あなたの立場", "立場"],
+    "region": ["お住まいの地域", "地域"],
     "experience": ["経験年数"],
     "facility": ["施設種別"],
     "authority": ["決裁", "決定権"],

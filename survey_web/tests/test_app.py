@@ -54,6 +54,27 @@ class T(unittest.TestCase):
         d = {k: v for k, v in GOOD.items() if k not in ("pain", "wish")}
         self.assertEqual(self.c.post("/submit", data=d).status_code, 302)
 
+    def test_region_optional_and_validated(self):
+        self.assertEqual(self.c.post("/submit", data={**GOOD, "region": "九州・沖縄"}).status_code, 302)
+        self.assertEqual(storage.all_responses()[0]["お住まいの地域"], "九州・沖縄")
+        survey._hits.clear()
+        self.assertEqual(self.c.post("/submit", data={**GOOD, "region": "火星"}).status_code, 302)  # 任意項目の不正値は保存しない
+        self.assertEqual(storage.all_responses()[-1]["お住まいの地域"], "")
+
+    def test_broad_medical_roles(self):
+        roles = next(q for q in survey.QUESTIONS if q["id"] == "role")["options"]
+        for r in ("医師", "歯科医師", "助産師・保健師", "介護職", "管理栄養士・栄養士"):
+            self.assertIn(r, roles)
+
+    def test_ogp_and_share(self):
+        html = self.c.get("/").get_data(as_text=True)
+        self.assertIn('property="og:title"', html)
+        os.environ["BASE_URL"] = "https://example.com/"
+        try:
+            self.assertIn("https%3A//example.com/%3Fsrc%3Dshare", self.c.get("/thanks").get_data(as_text=True).replace("%3A%2F%2F", "%3A//"))
+        finally:
+            os.environ.pop("BASE_URL")
+
     def test_no_price_or_payer_question(self):
         titles = " ".join(q["title"] for q in survey.QUESTIONS)
         self.assertNotIn("いくらまで", titles)

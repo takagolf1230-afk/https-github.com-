@@ -39,7 +39,7 @@ with st.sidebar.expander("列の割り当て(自動認識の確認)"):
 t1, t2, t3, t4, t5 = st.tabs(["回答者", "需要の大きい雑務", "価格感度", "購入意向", "自由記述"])
 
 with t1:
-    for key, label in (("role", "職種"), ("experience", "経験年数"), ("facility", "施設種別"), ("authority", "購入の決定権")):
+    for key, label in (("role", "職種"), ("position", "立場"), ("region", "地域"), ("experience", "経験年数"), ("facility", "施設種別"), ("authority", "購入の決定権")):
         if cols.get(key):
             st.subheader(label)
             st.bar_chart(an.counts(df[cols[key]]))

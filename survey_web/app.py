@@ -1,6 +1,7 @@
 """SNS向けアンケートの回答サーバー(Flask)。 起動: python app.py  / 本番: waitress-serve --port=8000 app:app
 
 環境変数:
+  BASE_URL        公開URL(SNSの共有ボタン・リンクプレビュー用。例 https://example.com)
   ADMIN_PASSWORD  管理画面のパスワード(未設定なら管理画面は無効)
   SURVEY_DB       DBファイルのパス(既定: このフォルダの survey.db)
   TRUST_PROXY     1 のとき CF-Connecting-IP / X-Forwarded-For を回数制限に使う(トンネル/リバースプロキシ越し)
@@ -79,10 +80,18 @@ def validate(form) -> tuple[dict, list[str]]:
     return answers, errors
 
 
+SHARE_TEXT = "医療現場の「雑務」アンケート（約30秒・匿名）。現場の声をもとに、雑務を減らすソフトを作ります。"
+
+
+def base_url() -> str:
+    """SNS共有用の公開URL。環境変数 BASE_URL があればそれを使う(例: https://xxxx.trycloudflare.com)。"""
+    return (os.environ.get("BASE_URL") or request.host_url).rstrip("/")
+
+
 @app.get("/")
 def index():
     return render_template("form.html", questions=QUESTIONS, errors=[], values=MultiDict(), email_help=EMAIL_HELP,
-                           src=clean_source(request.args.get("src", "")))
+                           src=clean_source(request.args.get("src", "")), share_text=SHARE_TEXT, base=base_url())
 
 
 @app.post("/submit")
@@ -95,7 +104,7 @@ def submit():
     src = clean_source(request.form.get("src", ""))
     if errors:
         return render_template("form.html", questions=QUESTIONS, errors=errors, values=request.form,
-                               email_help=EMAIL_HELP, src=src), 400
+                               email_help=EMAIL_HELP, src=src, share_text=SHARE_TEXT, base=base_url()), 400
     email = (request.form.get("email", "") or "").strip()[:200]
     if email and not EMAIL_RE.match(email):
         email = ""
@@ -105,7 +114,9 @@ def submit():
 
 @app.get("/thanks")
 def thanks():
-    return render_template("thanks.html")
+    from urllib.parse import quote
+    share = f"https://twitter.com/intent/tweet?text={quote(SHARE_TEXT)}&url={quote(base_url() + '/?src=share')}"
+    return render_template("thanks.html", share_url=share)
 
 
 @app.get("/healthz")
@@ -149,8 +160,10 @@ def admin():
     chores = Counter(c for r in rows for c in r.get(chore_title, "").split(", ") if c)
     role_title = next(q["title"] for q in QUESTIONS if q["id"] == "role")
     roles = Counter(r.get(role_title, "") for r in rows)
+    region_title = next(q["title"] for q in QUESTIONS if q["id"] == "region")
+    regions = Counter(r.get(region_title, "") or "(未回答)" for r in rows)
     return render_template("admin.html", total=len(rows), by_day=sorted(by_day.items(), reverse=True)[:14],
-                           by_source=by_source.most_common(), chores=chores.most_common(), roles=roles.most_common(),
+                           by_source=by_source.most_common(), chores=chores.most_common(), roles=roles.most_common(), regions=regions.most_common(),
                            leads=len(storage.all_leads()), recent=rows[-10:][::-1], questions=QUESTIONS)
 
 
