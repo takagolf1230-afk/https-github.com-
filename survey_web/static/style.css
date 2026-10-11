@@ -1,0 +1,29 @@
+:root{--bg:#f4f7fa;--card:#fff;--ink:#1d2733;--sub:#5b6b7b;--line:#d5dde5;--main:#0b7a75;--main-d:#085c58;--err:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#10171d;--card:#18222b;--ink:#e8eef3;--sub:#9fb0be;--line:#2c3b48;--main:#2bb3ab;--main-d:#1f8f88;--err:#ff7b6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 96px}
+h1{font-size:1.35rem;line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);font-size:.92rem;margin:0 0 18px}
+.lead li{margin:2px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 14px}
+.card.err{border-color:var(--err)}
+.q{font-weight:700;margin:0 0 4px}
+.req{color:var(--err);font-size:.8rem;margin-left:6px;font-weight:400}
+.hint{color:var(--sub);font-size:.85rem;margin:0 0 8px}
+.opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;min-height:48px}
+.opt:has(input:checked){border-color:var(--main);background:color-mix(in srgb,var(--main) 12%,transparent)}
+.opt input{width:20px;height:20px;accent-color:var(--main);flex:none}
+.opt.dis{opacity:.45}
+textarea,input[type=email]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.msg{color:var(--err);font-size:.85rem;margin:6px 0 0}
+.btn{display:block;width:100%;border:0;border-radius:12px;background:var(--main);color:#fff;font:inherit;font-weight:700;padding:16px;cursor:pointer}
+.btn:hover{background:var(--main-d)}
+.bar{position:sticky;top:0;z-index:2;background:var(--bg);padding:8px 0}
+.bar i{display:block;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar b{display:block;height:100%;width:0;background:var(--main);transition:width .2s}
+.hp{position:absolute;left:-9999px;height:0;overflow:hidden}
+.small{color:var(--sub);font-size:.8rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+a{color:var(--main)}
